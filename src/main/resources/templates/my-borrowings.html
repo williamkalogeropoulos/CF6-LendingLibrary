@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Borrowings</title>
+</head>
+<body>
+<div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
+
+<h1>My Borrowed Books</h1>
+
+<table border="1">
+    <tr>
+        <th>Book</th>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+        <th>Overdue Charges</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="borrowing : ${borrowings}">
+        <td th:text="${borrowing.bookId}"></td>
+        <td th:text="${borrowing.borrowDate}"></td>
+        <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
+        <td th:text="${borrowing.overdueCharges}"></td>
+        <td>
+            <a th:href="@{/borrowings/{id}/return(id=${borrowing.id})}">Return Book</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

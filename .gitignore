@@ -1,24 +1,77 @@
-# Compiled class file
-*.class
+# Maven build files
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
 
-# Log file
+# IntelliJ IDEA files
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# NetBeans files
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Logs and temporary files
 *.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
 
-# BlueJ files
-*.ctxt
+# React build files
+node_modules/
+build/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*.local
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Coverage directories
+coverage/
 
-# Package Files #
+# Linting
+.eslintcache
+eslint.report.html
+
+# IDE configuration files
+*.idea/
+
+# JetBrains IDEs
+out/
+
+# Specific files
+*.class
 *.jar
 *.war
-*.nar
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# Custom directory exclusions
+logs/
+temp/
+mvnw
+mvnw.cmd
