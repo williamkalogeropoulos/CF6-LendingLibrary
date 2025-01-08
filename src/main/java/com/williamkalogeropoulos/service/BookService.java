@@ -13,4 +13,6 @@ public interface BookService {
 
     // ✅ Added method to fetch all books for the UI
     List<Book> getAllBooks();
+
+    void updateBook(Long id, String title, String author, String isbn);
 }

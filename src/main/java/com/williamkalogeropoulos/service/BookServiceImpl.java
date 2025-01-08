@@ -56,4 +56,9 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAllBooks() {
         return bookRepository.findAll(); // ✅ Now properly fetches all books
     }
+
+    @Override
+    public void updateBook(Long id, String title, String author, String isbn) {
+
+    }
 }

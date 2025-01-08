@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Available Books</title>
+    <title>View Books</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
 </head>
@@ -9,8 +9,9 @@
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
 
 <div class="container mt-4">
-    <h1 class="text-center">Available Books</h1>
+    <h1 class="text-center">View Books</h1>
 
+    <!-- Book Table -->
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
@@ -19,7 +20,6 @@
             <th>Author</th>
             <th>ISBN</th>
             <th>Availability</th>
-            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -30,13 +30,7 @@
             <td th:text="${book.isbn}"></td>
             <td>
                 <span th:if="${book.available}" class="text-success">Available</span>
-                <span th:unless="${book.available}" class="text-danger">Not Available</span>
-            </td>
-            <td>
-                <form th:if="${book.available}" th:action="@{/borrowings/{bookId}(bookId=${book.id})}" method="post">
-                    <button type="submit" class="btn btn-primary btn-sm">Borrow</button>
-                </form>
-                <span th:unless="${book.available}" class="text-danger">Not Available</span>
+                <span th:unless="${book.available}" class="text-danger">Unavailable</span>
             </td>
         </tr>
         </tbody>

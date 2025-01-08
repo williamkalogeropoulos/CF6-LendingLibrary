@@ -6,6 +6,7 @@ import com.williamkalogeropoulos.service.BookService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -25,23 +26,45 @@ public class BookControllerThymeleaf {
         return "books";
     }
 
-    @GetMapping("/add")
-    public String showAddBookForm() {
-        return "add-book";
+    @GetMapping("/manage")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String manageBooks(Model model) {
+        List<Book> books = bookService.getAllBooks();
+        model.addAttribute("books", books);
+        return "manage-books";
     }
 
     @PostMapping("/add")
-    public String addBook(@RequestParam String title, @RequestParam String author) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addBook(@RequestParam String title, @RequestParam String author, @RequestParam String isbn) {
         Book book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
+        book.setIsbn(isbn);
+        book.setAvailable(true);
         bookService.saveBook(book);
-        return "redirect:/books";
+        return "redirect:/books/manage";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        BookDTO book = bookService.getBookById(id);
+        model.addAttribute("book", book);
+        return "edit-book";
+    }
+
+    @PostMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String updateBook(@PathVariable Long id, @RequestParam String title, @RequestParam String author, @RequestParam String isbn) {
+        bookService.updateBook(id, title, author, isbn);
+        return "redirect:/books/manage";
+    }
+
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
-        return "redirect:/books";
+        return "redirect:/books/manage";
     }
 }
