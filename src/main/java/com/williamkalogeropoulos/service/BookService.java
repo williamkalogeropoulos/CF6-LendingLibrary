@@ -7,6 +7,7 @@ import java.util.List;
 public interface BookService {
     List<BookDTO> getAvailableBooks();
     BookDTO getBookById(Long id);
+    List<BookDTO> getBooksByIsbn(String ISBN);
     Book saveBook(Book book);
     void deleteBook(Long id);
 

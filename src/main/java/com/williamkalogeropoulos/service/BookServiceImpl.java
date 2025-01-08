@@ -35,6 +35,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDTO> getBooksByIsbn(String ISBN) {
+        return bookRepository.findByIsbn(ISBN)
+                .stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Book saveBook(Book book) {
         return bookRepository.save(book);
     }

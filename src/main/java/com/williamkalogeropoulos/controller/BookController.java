@@ -39,6 +39,13 @@ public class BookController {
         return book != null ? ResponseEntity.ok(book) : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Get book by ISBN", description = "Fetches details of a specific book by ISBN")
+    @GetMapping("/{ISBN}")
+    public ResponseEntity<List<BookDTO>> getBookByIsbn(@PathVariable String ISBN) {
+        List<BookDTO> books = bookService.getBooksByIsbn(ISBN);
+        return books != null ? ResponseEntity.ok(books) : ResponseEntity.notFound().build();
+    }
+
     @Operation(summary = "Add a new book", description = "Allows admins to add new books to the system")
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody Book book) {

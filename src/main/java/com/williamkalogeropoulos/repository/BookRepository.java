@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByAvailableTrue(); // Find only available books
+    List<Book> findByIsbn(String ISBN); // find books with ISBN
 }

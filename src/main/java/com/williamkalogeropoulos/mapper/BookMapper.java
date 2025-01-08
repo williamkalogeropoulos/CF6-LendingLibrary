@@ -5,6 +5,6 @@ import com.williamkalogeropoulos.entity.Book;
 
 public class BookMapper {
     public static BookDTO toDTO(Book book) {
-        return new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), book.getAvailable());
+        return new BookDTO(book.getId(), book.getTitle(), book.getAuthor(), book.getIsbn(), book.getAvailable());
     }
 }
