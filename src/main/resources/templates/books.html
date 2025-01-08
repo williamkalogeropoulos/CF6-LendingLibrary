@@ -36,7 +36,7 @@
                 <form th:if="${book.available}" th:action="@{/borrowings/{bookId}(bookId=${book.id})}" method="post">
                     <button type="submit" class="btn btn-primary btn-sm">Borrow</button>
                 </form>
-                <span th:unless="${book.available}" class="text-muted">Not Available</span>
+                <span th:unless="${book.available}" class="text-danger">Not Available</span>
             </td>
         </tr>
         </tbody>

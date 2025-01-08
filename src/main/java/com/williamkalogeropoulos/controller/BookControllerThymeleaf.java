@@ -20,7 +20,7 @@ public class BookControllerThymeleaf {
 
     @GetMapping
     public String listBooks(Model model) {
-        List<BookDTO> books = bookService.getAvailableBooks();
+        List<Book> books = bookService.getAllBooks();
         model.addAttribute("books", books);
         return "books";
     }
