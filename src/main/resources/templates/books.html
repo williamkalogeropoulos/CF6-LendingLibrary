@@ -1,3 +1,4 @@
+<!-- Updated books.html with Borrow Button -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
@@ -20,6 +21,7 @@
             <th>Author</th>
             <th>ISBN</th>
             <th>Availability</th>
+            <th sec:authorize="hasRole('USER')">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -28,9 +30,12 @@
             <td th:text="${book.title}"></td>
             <td th:text="${book.author}"></td>
             <td th:text="${book.isbn}"></td>
-            <td>
-                <span th:if="${book.available}" class="text-success">Available</span>
-                <span th:unless="${book.available}" class="text-danger">Unavailable</span>
+            <td th:text="${book.available ? 'Available' : 'Not Available'}"></td>
+            <td sec:authorize="hasRole('USER')">
+                <form th:action="@{/borrow}" method="post">
+                    <input type="hidden" name="bookId" th:value="${book.id}" />
+                    <button type="submit" class="btn" th:classappend="${book.available ? 'btn-primary' : 'btn-grey'}" th:disabled="${!book.available}">Borrow</button>
+                </form>
             </td>
         </tr>
         </tbody>

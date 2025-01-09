@@ -31,3 +31,10 @@ h1 {
     background-color: #0056b3;
     color: white;
 }
+
+.btn-grey {
+    background-color: grey;
+    border-color: grey;
+    color: white;
+    cursor: not-allowed;
+}
