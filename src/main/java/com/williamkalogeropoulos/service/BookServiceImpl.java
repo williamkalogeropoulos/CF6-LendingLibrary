@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +60,16 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void updateBook(Long id, String title, String author, String isbn) {
-
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.setTitle(title);
+            book.setAuthor(author);
+            book.setIsbn(isbn);
+            bookRepository.save(book);  // ✅ Save the updated book
+        } else {
+            throw new RuntimeException("Book not found with ID: " + id);
+        }
     }
-}
+    }
+
