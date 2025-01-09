@@ -6,6 +6,7 @@ import com.williamkalogeropoulos.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,4 +59,15 @@ public class BookController {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/reset-availability")
+    @PreAuthorize("hasRole('ADMIN')") // ✅ Ensures only admins can access
+    public ResponseEntity<String> resetBookAvailability() {
+        try {
+            bookService.resetAllBooks();
+            return ResponseEntity.ok("All books have been reset to available.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
+    }
 }
+

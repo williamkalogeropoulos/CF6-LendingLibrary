@@ -4,6 +4,7 @@ import com.williamkalogeropoulos.dto.BookDTO;
 import com.williamkalogeropoulos.entity.Book;
 import com.williamkalogeropoulos.mapper.BookMapper;
 import com.williamkalogeropoulos.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> getAvailableBooks() {
         return bookRepository.findByAvailableTrue()
                 .stream()
-                .map(BookMapper::toDTO) // Converts Entity to DTO
+                .map(BookMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -66,10 +67,16 @@ public class BookServiceImpl implements BookService {
             book.setTitle(title);
             book.setAuthor(author);
             book.setIsbn(isbn);
+            book.setAvailable(true); // ✅ Ensure books are marked available when updated
             bookRepository.save(book);  // ✅ Save the updated book
         } else {
             throw new RuntimeException("Book not found with ID: " + id);
         }
     }
-    }
 
+    @Override
+    @Transactional // ✅ Ensures the query runs in a transaction
+    public void resetAllBooks() {
+        bookRepository.updateAllBooksToAvailable();
+    }
+}

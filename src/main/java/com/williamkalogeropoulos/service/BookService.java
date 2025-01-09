@@ -15,4 +15,6 @@ public interface BookService {
     List<Book> getAllBooks();
 
     void updateBook(Long id, String title, String author, String isbn);
+
+    void resetAllBooks();
 }

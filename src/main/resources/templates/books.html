@@ -1,10 +1,39 @@
-<!-- Updated books.html with Borrow Button -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>View Books</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".borrow-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    const bookId = this.getAttribute("data-book-id");
+
+                    fetch(`/api/borrowings/${bookId}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Failed to borrow book");
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            alert("Book borrowed successfully!");
+                            location.reload(); // Refresh the page to reflect the changes
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Error borrowing book");
+                        });
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
@@ -32,12 +61,46 @@
             <td th:text="${book.isbn}"></td>
             <td th:text="${book.available ? 'Available' : 'Not Available'}"></td>
             <td sec:authorize="hasRole('USER')">
-                <form th:action="@{/borrow}" method="post">
-                    <input type="hidden" name="bookId" th:value="${book.id}" />
-                    <button type="submit" class="btn" th:classappend="${book.available ? 'btn-primary' : 'btn-grey'}" th:disabled="${!book.available}">Borrow</button>
-                </form>
+                <button type="button" class="btn borrow-button"
+                        th:data-book-id="${book.id}"
+                        th:classappend="${book.available ? 'btn-primary' : 'btn-grey'}"
+                        th:disabled="${!book.available}">
+                    Borrow
+                </button>
             </td>
         </tr>
+        <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
+            <button type="button" class="btn btn-warning reset-books-button">Reset All Books</button>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const resetButton = document.querySelector(".reset-books-button");
+                if (resetButton) {
+                    resetButton.addEventListener("click", function () {
+                        if (confirm("Are you sure you want to reset all books to available?")) {
+                            fetch("/api/books/reset-availability", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" }
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        return response.text().then(text => { throw new Error(text); });
+                                    }
+                                    return response.text();
+                                })
+                                .then(message => {
+                                    alert(message);
+                                    location.reload();
+                                })
+                                .catch(error => {
+                                    console.error("Error:", error);
+                                    alert("Error resetting books: " + error.message);
+                                });
+                        }
+                    });
+                }
+            });
+        </script>
         </tbody>
     </table>
 </div>

@@ -1,30 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>My Borrowings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
 
-<h1>My Borrowed Books</h1>
+<div class="container mt-4">
+    <h1 class="text-center">My Borrowed Books</h1>
 
-<table border="1">
-    <tr>
-        <th>Book</th>
-        <th>Borrow Date</th>
-        <th>Return Date</th>
-        <th>Overdue Charges</th>
-        <th>Actions</th>
-    </tr>
-    <tr th:each="borrowing : ${borrowings}">
-        <td th:text="${borrowing.bookId}"></td>
-        <td th:text="${borrowing.borrowDate}"></td>
-        <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
-        <td th:text="${borrowing.overdueCharges}"></td>
-        <td>
-            <a th:href="@{/borrowings/{id}/return(id=${borrowing.id})}">Return Book</a>
-        </td>
-    </tr>
-</table>
+    <table class="table table-striped table-bordered text-center">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Borrow Date</th>
+            <th>Return Date</th>
+            <th>Overdue Charges</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="borrowing : ${borrowings}">
+            <td th:text="${borrowing.bookId}"></td>
+            <td th:text="${borrowing.bookTitle}"></td>
+            <td th:text="${borrowing.bookAuthor}"></td>
+            <td th:text="${borrowing.bookIsbn}"></td>
+            <td th:text="${borrowing.borrowDate}"></td>
+            <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
+            <td th:text="${borrowing.overdueCharges}"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-danger w-100"
+                        th:data-borrowing-id="${borrowing.id}"
+                        th:disabled="${borrowing.returnDate != null}"
+                        th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-danger'}"
+                        th:text="${borrowing.returnDate == null ? 'Return' : 'Book Returned'}">
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-danger").forEach(button => {
+            button.addEventListener("click", function () {
+                const borrowingId = this.getAttribute("data-borrowing-id");
+
+                fetch(`/api/borrowings/${borrowingId}/return`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to return book.");
+                        return response.text();
+                    })
+                    .then(message => {
+                        alert(message);
+                        location.reload(); // Refresh to reflect changes
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Error returning book.");
+                    });
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -30,18 +30,20 @@ public class BorrowingController {
     @Operation(summary = "Get user borrowings", description = "Fetches all borrowings associated with the logged-in user")
     @GetMapping("/my-borrowings")
     public ResponseEntity<List<BorrowingDTO>> getUserBorrowings(@AuthenticationPrincipal UserDetails userDetails) {
-        return ResponseEntity.ok(borrowingService.getUserBorrowings(String.valueOf(Long.valueOf(userDetails.getUsername()))));
+        return ResponseEntity.ok(borrowingService.getUserBorrowings(userDetails.getUsername()));
     }
 
     @Operation(summary = "Borrow a book", description = "Allows the logged-in user to borrow a book")
     @PostMapping("/{bookId}")
-    public ResponseEntity<BorrowingDTO> borrowBook(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long bookId) {
-        return ResponseEntity.ok(borrowingService.borrowBook(String.valueOf(Long.valueOf(userDetails.getUsername())), bookId));
+    public ResponseEntity<BorrowingDTO> borrowBook(@AuthenticationPrincipal UserDetails userDetails,
+                                                   @PathVariable Long bookId) {
+        return ResponseEntity.ok(borrowingService.borrowBook(userDetails.getUsername(), bookId));
     }
 
-    @Operation(summary = "Return a book", description = "Allows the logged-in user to return a borrowed book")
-    @PutMapping("/{borrowingId}/return")
-    public ResponseEntity<BorrowingDTO> returnBook(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long borrowingId) {
-        return ResponseEntity.ok(borrowingService.returnBook(userDetails.getUsername(), borrowingId));
+    @Operation(summary = "Return a book", description = "Allows the logged-in user to return a book")
+    @PostMapping("/{id}/return")
+    public ResponseEntity<String> returnBook(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
+        borrowingService.returnBook(userDetails.getUsername(), id);
+        return ResponseEntity.ok("Book returned successfully");
     }
 }

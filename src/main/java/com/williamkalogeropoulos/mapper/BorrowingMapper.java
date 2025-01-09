@@ -5,13 +5,15 @@ import com.williamkalogeropoulos.entity.Borrowing;
 
 public class BorrowingMapper {
     public static BorrowingDTO toDTO(Borrowing borrowing) {
-        return new BorrowingDTO(
-                borrowing.getId(),
-                borrowing.getUser() != null ? borrowing.getUser().getUsername() : "Unknown",
-                borrowing.getBook() != null ? borrowing.getBook().getId() : null,
-                borrowing.getBorrowDate(),
-                borrowing.getReturnDate(),
-                borrowing.getOverdueCharges()
-        );
+        BorrowingDTO dto = new BorrowingDTO();
+        dto.setId(borrowing.getId());
+        dto.setBookId(borrowing.getBook().getId());
+        dto.setBookTitle(borrowing.getBook().getTitle());
+        dto.setBookAuthor(borrowing.getBook().getAuthor());
+        dto.setBookIsbn(borrowing.getBook().getIsbn());
+        dto.setBorrowDate(borrowing.getBorrowDate());
+        dto.setReturnDate(borrowing.getReturnDate());
+        dto.setOverdueCharges(borrowing.getOverdueCharges());
+        return dto;
     }
 }

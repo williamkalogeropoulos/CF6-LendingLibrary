@@ -46,7 +46,6 @@ public class BorrowingServiceImpl implements BorrowingService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public BorrowingDTO borrowBook(String username, Long bookId) {
         User user = userRepository.findByUsername(username)
@@ -83,12 +82,13 @@ public class BorrowingServiceImpl implements BorrowingService {
             throw new RuntimeException("You can only return books you borrowed");
         }
 
-        borrowing.setReturnDate(LocalDate.from(LocalDate.now().atStartOfDay()));
-        Book book = borrowing.getBook();
-        book.setAvailable(true); // Mark book as available again
+        borrowing.setReturnDate(LocalDate.now());
 
-        borrowingRepository.save(borrowing);
-        bookRepository.save(book);
+        Book book = borrowing.getBook();
+        book.setAvailable(true); // ✅ Mark book as available
+        bookRepository.save(book); // ✅ Save book update immediately
+
+        borrowingRepository.save(borrowing); // ✅ Now save the borrowing record
 
         return BorrowingMapper.toDTO(borrowing);
     }

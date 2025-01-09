@@ -1,14 +1,28 @@
 package com.williamkalogeropoulos.controller;
 
+import com.williamkalogeropoulos.dto.BorrowingDTO;
+import com.williamkalogeropoulos.service.BorrowingService; // Import BorrowingService
 import com.williamkalogeropoulos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 public class HomeController {
 
+    private final UserService userService;
+    private final BorrowingService borrowingService; // Declare BorrowingService
+
+    @Autowired
+    public HomeController(UserService userService, BorrowingService borrowingService) {
+        this.userService = userService;
+        this.borrowingService = borrowingService; // Inject BorrowingService
+    }
 
     @GetMapping("/")
     public String homePage(Model model) {
@@ -16,16 +30,20 @@ public class HomeController {
         return "index"; // ✅ No ".html" needed
     }
 
-    private final UserService userService;
-
-    @Autowired
-    public HomeController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping("/manage-users")
     public String manageUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
         return "manage-users";
+    }
+
+    @GetMapping("/my-borrowings")
+    public String myBorrowingsPage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        // Fetch user borrowings
+        List<BorrowingDTO> borrowings = borrowingService.getUserBorrowings(userDetails.getUsername());
+
+        // Pass borrowings to Thymeleaf template
+        model.addAttribute("borrowings", borrowings);
+
+        return "my-borrowings"; // Return the Thymeleaf template
     }
 }
