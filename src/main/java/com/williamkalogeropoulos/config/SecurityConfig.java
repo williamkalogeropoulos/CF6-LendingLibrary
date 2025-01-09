@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register").permitAll() // Allow user registration
                         .requestMatchers("/api/books/**", "/api/borrowings/**").authenticated() // Require login
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Only admins can access /api/admin/**
+                        .requestMatchers("/api/admin/**", "/api/users", "/api/users/**", "/manage-users").hasRole("ADMIN") // Only admins can access user management
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -21,7 +21,7 @@
                     <a class="nav-link" href="/books/manage">Manage Books</a>
                 </li>
                 <li class="nav-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                    <a class="nav-link" href="/users">Manage Users</a>
+                    <a class="nav-link" href="/manage-users">Manage Users</a>
                 </li>
                 <li class="nav-item" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
                     <a class="nav-link" href="/borrowings">View Borrowings</a>

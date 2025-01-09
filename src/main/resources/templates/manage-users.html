@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Manage Users</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: white;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+    }
+    thead {
+      background-color: #f2f2f2;
+    }
+    .dropdown {
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .btn {
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    .btn-danger:hover {
+      background-color: #bd2130;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+  </style>
+  <script>
+    function changeRole(userId) {
+      let newRole = document.getElementById('roleSelect' + userId).value;
+      fetch(`/api/users/${userId}/role?role=${newRole}`, {
+        method: 'PUT',
+        headers: { "Content-Type": "application/json" }
+      })
+              .then(response => response.text())
+              .then(data => {
+                alert(data);
+                location.reload();  // Refresh page to reflect changes
+              })
+              .catch(error => console.error('Error:', error));
+    }
+  </script>
+</head>
+<body>
+<div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
+<div class="container">
+  <h2>Manage Users</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}"></td>
+      <td th:text="${user.username}"></td>
+      <td>
+        <select th:id="'roleSelect' + ${user.id}" class="dropdown">
+          <option value="USER" th:selected="${user.role == 'USER'}">User</option>
+          <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Admin</option>
+        </select>
+      </td>
+      <td class="action-buttons">
+        <button class="btn btn-primary" th:onclick="'changeRole(' + ${user.id} + ')'">
+          Change Role
+        </button>
+        <button class="btn btn-danger">
+          Delete
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a href="/" class="btn btn-primary" style="margin-top: 20px; display: block; text-align: center;">Back to Home</a>
+</div>
+</body>
+</html>
