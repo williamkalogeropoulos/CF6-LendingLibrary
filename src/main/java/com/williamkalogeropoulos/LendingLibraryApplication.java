@@ -40,7 +40,16 @@ public class LendingLibraryApplication {
             } else {
                 System.out.println("✅ User user already exists");
             }
-
+            if (userRepository.findByUsername("user2").isEmpty()) {
+                User user = new User();
+                user.setUsername("user2");
+                user.setPassword(passwordEncoder.encode("User123456!")); // ✅ Ensure password is hashed
+                user.setRole(Role.USER);
+                userRepository.save(user);
+                System.out.println("✅ User user created: user / User123456! ");
+            } else {
+                System.out.println("✅ User user already exists");
+            }
         };
     }
 }

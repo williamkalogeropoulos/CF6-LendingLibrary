@@ -34,7 +34,11 @@ public class BorrowingServiceImpl implements BorrowingService {
     public List<BorrowingDTO> getAllActiveBorrowings() {
         return borrowingRepository.findByReturnDateIsNull()
                 .stream()
-                .map(BorrowingMapper::toDTO)
+                .map(borrowing -> {
+                    BorrowingDTO dto = BorrowingMapper.toDTO(borrowing);
+                    dto.setUsername(borrowing.getUser().getUsername()); // ✅ Set username
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 

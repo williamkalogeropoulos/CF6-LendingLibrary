@@ -14,7 +14,6 @@
     <table class="table table-striped table-bordered text-center">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Title</th>
             <th>Author</th>
             <th>ISBN</th>
@@ -26,7 +25,6 @@
         </thead>
         <tbody>
         <tr th:each="borrowing : ${borrowings}">
-            <td th:text="${borrowing.bookId}"></td>
             <td th:text="${borrowing.bookTitle}"></td>
             <td th:text="${borrowing.bookAuthor}"></td>
             <td th:text="${borrowing.bookIsbn}"></td>
@@ -72,6 +70,5 @@
         });
     });
 </script>
-
 </body>
 </html>

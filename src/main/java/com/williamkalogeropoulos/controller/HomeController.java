@@ -4,6 +4,7 @@ import com.williamkalogeropoulos.dto.BorrowingDTO;
 import com.williamkalogeropoulos.service.BorrowingService; // Import BorrowingService
 import com.williamkalogeropoulos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -45,5 +46,11 @@ public class HomeController {
         model.addAttribute("borrowings", borrowings);
 
         return "my-borrowings"; // Return the Thymeleaf template
+    }
+    @GetMapping("/admin/borrowings")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String viewAdminBorrowings(Model model) {
+        model.addAttribute("borrowings", borrowingService.getAllActiveBorrowings());
+        return "borrowings"; // Maps to borrowings.html
     }
 }

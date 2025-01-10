@@ -1,34 +1,147 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>My Borrowed Books</title>
+    <title>Admin Borrowings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
 
 <div class="container mt-4">
-    <h1 class="text-center">My Borrowed Books</h1>
+    <h1 class="text-center">Admin Borrowings Management</h1>
 
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered text-center" id="borrowingsTable">
         <thead>
         <tr>
-            <th>Book</th>
-            <th>Borrow Date</th>
-            <th>Return Date</th>
-            <th>Overdue Charges</th>
+            <th><a href="#" onclick="sortTable(0)">ID</a></th>
+            <th><a href="#" onclick="sortTable(1)">Username</a></th>
+            <th><a href="#" onclick="sortTable(2)">Title</a></th>
+            <th><a href="#" onclick="sortTable(3)">Author</a></th>
+            <th><a href="#" onclick="sortTable(4)">ISBN</a></th>
+            <th><a href="#" onclick="sortTable(5)">Borrow Date</a></th>
+            <th><a href="#" onclick="sortTable(6)">Return Date</a></th>
+            <th><a href="#" onclick="sortTable(7)">Overdue Charges</a></th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="borrowing : ${borrowings}">
             <td th:text="${borrowing.bookId}"></td>
+            <td th:text="${borrowing.username}"></td>
+            <td th:text="${borrowing.bookTitle}"></td>
+            <td th:text="${borrowing.bookAuthor}"></td>
+            <td th:text="${borrowing.bookIsbn}"></td>
             <td th:text="${borrowing.borrowDate}"></td>
             <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
-            <td th:text="${borrowing.overdueCharges}"></td>
+            <td th:text="${borrowing.overdueCharges} + ' €'"></td>
+            <td>
+                <button type="button" class="btn btn-danger w-100"
+                        th:data-borrowing-id="${borrowing.id}"
+                        th:disabled="${borrowing.returnDate != null}"
+                        th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-danger'}"
+                        th:text="${borrowing.returnDate == null ? 'Return' : 'Book Returned'}">
+                </button>
+                <button type="button" class="btn btn-warning w-100 mt-2 cancel-borrowing-button"
+                        th:data-borrowing-id="${borrowing.id}">
+                    Cancel Borrowing
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btn-danger").forEach(button => {
+            button.addEventListener("click", function () {
+                const borrowingId = this.getAttribute("data-borrowing-id");
+
+                fetch(`/api/borrowings/${borrowingId}/return`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Failed to return book.");
+                        return response.text();
+                    })
+                    .then(message => {
+                        alert(message);
+                        location.reload(); // Refresh to reflect changes
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Error returning book.");
+                    });
+            });
+        });
+
+        document.querySelectorAll(".cancel-borrowing-button").forEach(button => {
+            button.addEventListener("click", function () {
+                const borrowingId = this.getAttribute("data-borrowing-id");
+
+                if (confirm("Are you sure you want to cancel this borrowing?")) {
+                    fetch(`/api/borrowings/${borrowingId}/cancel`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" }
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Failed to cancel borrowing.");
+                            return response.text();
+                        })
+                        .then(message => {
+                            alert(message);
+                            location.reload(); // Refresh to reflect changes
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Error canceling borrowing.");
+                        });
+                }
+            });
+        });
+    });
+
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("borrowingsTable");
+        switching = true;
+        dir = "asc";
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount ++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
