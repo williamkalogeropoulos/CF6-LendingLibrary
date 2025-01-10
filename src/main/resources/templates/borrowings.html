@@ -44,10 +44,6 @@
                         th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-danger'}"
                         th:text="${borrowing.returnDate == null ? 'Return' : 'Book Returned'}">
                 </button>
-                <button type="button" class="btn btn-warning w-100 mt-2 cancel-borrowing-button"
-                        th:data-borrowing-id="${borrowing.id}">
-                    Cancel Borrowing
-                </button>
             </td>
         </tr>
         </tbody>
@@ -78,32 +74,6 @@
                     });
             });
         });
-
-        document.querySelectorAll(".cancel-borrowing-button").forEach(button => {
-            button.addEventListener("click", function () {
-                const borrowingId = this.getAttribute("data-borrowing-id");
-
-                if (confirm("Are you sure you want to cancel this borrowing?")) {
-                    fetch(`/api/borrowings/${borrowingId}/cancel`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" }
-                    })
-                        .then(response => {
-                            if (!response.ok) throw new Error("Failed to cancel borrowing.");
-                            return response.text();
-                        })
-                        .then(message => {
-                            alert(message);
-                            location.reload(); // Refresh to reflect changes
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            alert("Error canceling borrowing.");
-                        });
-                }
-            });
-        });
-    });
 
     function sortTable(n) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
