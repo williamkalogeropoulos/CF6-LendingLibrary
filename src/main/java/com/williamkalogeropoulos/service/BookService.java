@@ -10,11 +10,11 @@ public interface BookService {
     List<BookDTO> getBooksByIsbn(String ISBN);
     Book saveBook(Book book);
     void deleteBook(Long id);
-
-    // ✅ Added method to fetch all books for the UI
     List<Book> getAllBooks();
-
     void updateBook(Long id, String title, String author, String isbn);
-
     void resetAllBooks();
+    List<Book> searchBooks(String query);
+    List<Book> searchBooksByAuthor(String author);
+    List<Book> searchBooksByTitleAndAuthor(String query, String author);
+    Book findByIsbn(String isbn);
 }
