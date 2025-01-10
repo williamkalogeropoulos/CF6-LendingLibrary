@@ -8,10 +8,13 @@ import com.williamkalogeropoulos.mapper.BorrowingMapper;
 import com.williamkalogeropoulos.repository.BorrowingRepository;
 import com.williamkalogeropoulos.repository.BookRepository;
 import com.williamkalogeropoulos.repository.UserRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +45,10 @@ public class BorrowingServiceImpl implements BorrowingService {
 
         return borrowingRepository.findByUser(user)
                 .stream()
-                .map(BorrowingMapper::toDTO)
+                .map(borrowing -> {
+                    updateOverdueCharges(borrowing);
+                    return BorrowingMapper.toDTO(borrowing);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +67,7 @@ public class BorrowingServiceImpl implements BorrowingService {
         Borrowing borrowing = new Borrowing();
         borrowing.setUser(user);
         borrowing.setBook(book);
-        borrowing.setBorrowDate(LocalDate.from(LocalDate.now().atStartOfDay()));
+        borrowing.setBorrowDate(LocalDate.now());
         borrowing.setReturnDate(null); // Not returned yet
         borrowing.setOverdueCharges(BigDecimal.valueOf(0.0));
 
@@ -91,5 +97,22 @@ public class BorrowingServiceImpl implements BorrowingService {
         borrowingRepository.save(borrowing); // ✅ Now save the borrowing record
 
         return BorrowingMapper.toDTO(borrowing);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight
+    @Transactional
+    public void updateDailyOverdueFees() {
+        List<Borrowing> activeBorrowings = borrowingRepository.findByReturnDateIsNull();
+        for (Borrowing borrowing : activeBorrowings) {
+            updateOverdueCharges(borrowing);
+            borrowingRepository.save(borrowing);
+        }
+    }
+
+    private void updateOverdueCharges(Borrowing borrowing) {
+        if (borrowing.getReturnDate() == null) {
+            long overdueDays = ChronoUnit.DAYS.between(borrowing.getBorrowDate(), LocalDate.now());
+            borrowing.setOverdueCharges(BigDecimal.valueOf(overdueDays));
+        }
     }
 }

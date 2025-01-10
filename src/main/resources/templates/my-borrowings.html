@@ -32,7 +32,7 @@
             <td th:text="${borrowing.bookIsbn}"></td>
             <td th:text="${borrowing.borrowDate}"></td>
             <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
-            <td th:text="${borrowing.overdueCharges}"></td>
+            <td th:text="${borrowing.overdueCharges != null ? borrowing.overdueCharges + ' €' : '0 €'}"></td>
             <td class="text-center">
                 <button type="button" class="btn btn-danger w-100"
                         th:data-borrowing-id="${borrowing.id}"
