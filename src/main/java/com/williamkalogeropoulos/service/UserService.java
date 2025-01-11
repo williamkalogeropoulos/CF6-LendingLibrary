@@ -10,4 +10,7 @@ public interface UserService {
     User saveUser(User user);
     List<UserDTO> getAllUsers();
     boolean updateUserRole(Long id, String role);
+    boolean deleteUser(Long id);
+
+    boolean updateUser(Long id, UserDTO userDTO); // ✅ Added this method
 }

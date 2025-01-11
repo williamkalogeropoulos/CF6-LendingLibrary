@@ -41,6 +41,22 @@
             <form class="d-flex" th:action="@{/logout}" method="post">
                 <button class="btn btn-outline-light px-3" type="submit">Logout</button>
             </form>
+
+            <!-- JavaScript to redirect after logout -->
+            <script>
+                document.querySelector("form[th\\:action='/logout']").addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    fetch('/logout', { method: 'POST' })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.href = "/login"; // ✅ Redirect to login page after logout
+                            } else {
+                                alert("Logout failed!");
+                            }
+                        })
+                        .catch(error => console.error("Logout error:", error));
+                });
+            </script>
         </div>
     </div>
 </nav>

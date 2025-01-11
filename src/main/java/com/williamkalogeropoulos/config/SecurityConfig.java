@@ -24,18 +24,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // Disable CSRF for API requests
+                .csrf(csrf -> csrf.disable())  // ✅ Disable CSRF for API requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll() // Allow user registration
-                        .requestMatchers("/api/books/**", "/api/borrowings/**").authenticated() // Require login
-                        .requestMatchers("/api/admin/**", "/api/users", "/api/users/**", "/manage-users").hasRole("ADMIN") // Only admins can access user management
+                        .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")  // ✅ Defines logout endpoint
+                        .logoutSuccessUrl("/login")  // ✅ Redirects to login page
+                        .invalidateHttpSession(true)  // ✅ Invalidates session
+                        .deleteCookies("JSESSIONID")  // ✅ Deletes session cookie
+                        .permitAll()
+                );
 
         return http.build();
     }

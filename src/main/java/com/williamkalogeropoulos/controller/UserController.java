@@ -6,6 +6,7 @@ import com.williamkalogeropoulos.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,5 +48,23 @@ public class UserController {
     public ResponseEntity<String> updateUserRole(@PathVariable Long id, @RequestParam String role) {
         boolean updated = userService.updateUserRole(id, role);
         return updated ? ResponseEntity.ok("User role updated successfully") : ResponseEntity.badRequest().body("Invalid role or user not found");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        boolean updated = userService.updateUser(id, userDTO);
+        return updated ? ResponseEntity.ok("User updated successfully")
+                : ResponseEntity.badRequest().body("User not found or invalid data");
+    }
+    @DeleteMapping("/{id}") // ✅ Correct path
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.ok().body("User deleted successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();  // ✅ Print error to console
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting user.");
+        }
     }
 }

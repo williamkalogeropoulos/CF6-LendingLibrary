@@ -7,16 +7,19 @@ public class UserDTO {
     private String username;
     private Role role; // Enum: USER, ADMIN
 
+    // ✅ Default constructor (Required for JSON deserialization)
+    public UserDTO() {}
+
+    // ✅ Correct Constructor
     public UserDTO(Long id, String username, Role role) {
         this.id = id;
         this.username = username;
         this.role = role;
     }
 
-    public UserDTO(Long id, String username, javax.management.relation.Role role) {
-    }
+    // ❌ Removed invalid constructor that used javax.management.relation.Role
 
-    // Getters and Setters
+    // ✅ Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
