@@ -4,34 +4,6 @@
     <title>Navigation</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css"> <!-- Custom CSS -->
-    <style>
-        #bookSearchForm {
-            width: 300px;
-            transition: width 0.3s ease-in-out;
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-        #bookSearch {
-            flex-grow: 1;
-            margin-right: 15px; /* Ensures constant spacing */
-        }
-        #searchResultsDropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: white;
-            z-index: 1000;
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 0.25rem;
-        }
-        .list-group-item.active {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
 </head>
 <body>
 
@@ -47,6 +19,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/books">View Books</a>
                 </li>
+
+                <!-- Admin-only links -->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" href="/books/manage">Manage Books</a>
                 </li>
@@ -56,104 +30,20 @@
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" href="/admin/borrowings">Admin Borrowings</a>
                 </li>
+
+                <!-- User-only link -->
                 <li class="nav-item" sec:authorize="hasRole('USER')">
                     <a class="nav-link" href="/my-borrowings">My Borrowings</a>
                 </li>
             </ul>
 
-            <!-- Search Bar with Confined Dropdown Results and Dynamic Expansion -->
-            <div class="d-flex align-items-center ms-3">
-                <form class="d-flex position-relative" id="bookSearchForm">
-                    <input class="form-control" type="text" id="bookSearch" placeholder="Search books..." required>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                    <div class="dropdown" id="searchResultsDropdown" style="display: none;">
-                        <ul class="list-group" id="searchResults"></ul>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Logout Button -->
-            <form class="d-flex ms-3" th:action="@{/logout}" method="post">
+            <!-- Logout Button aligned to the right -->
+            <form class="d-flex" th:action="@{/logout}" method="post">
                 <button class="btn btn-outline-light px-3" type="submit">Logout</button>
             </form>
         </div>
     </div>
 </nav>
-
-<script>
-    let currentIndex = -1;
-
-    document.getElementById('bookSearch').addEventListener('input', function() {
-        let query = this.value.trim();
-        let resultsDropdown = document.getElementById('searchResultsDropdown');
-        let resultsList = document.getElementById('searchResults');
-        let searchForm = document.getElementById('bookSearchForm');
-
-        if (query.length >= 3) {
-            searchForm.style.width = '500px'; // Expand search bar when typing
-            fetch(`/api/search?query=${query}`)
-                .then(response => response.json())
-                .then(data => {
-                    resultsList.innerHTML = '';
-                    if (data.length > 0) {
-                        resultsDropdown.style.display = 'block';
-                        data.forEach((book, index) => {
-                            let li = document.createElement('li');
-                            li.classList.add('list-group-item');
-                            li.innerHTML = `<a href='#' class='dropdown-item' data-isbn='${book.isbn}'>${book.title} by ${book.author}</a>`;
-                            li.addEventListener('click', function(event) {
-                                event.preventDefault();
-                                window.location.href = `/book/${book.isbn}`;
-                            });
-                            resultsList.appendChild(li);
-                        });
-                        currentIndex = -1;
-                    } else {
-                        resultsDropdown.style.display = 'none';
-                    }
-                })
-                .catch(error => console.error('Error fetching search results:', error));
-        } else {
-            searchForm.style.width = '300px'; // Shrink back when input is cleared
-            resultsDropdown.style.display = 'none';
-        }
-    });
-
-    // Handle keyboard navigation
-    document.getElementById('bookSearch').addEventListener('keydown', function(event) {
-        let items = document.querySelectorAll('#searchResults .list-group-item');
-        if (items.length === 0) return;
-
-        if (event.key === 'ArrowDown') {
-            event.preventDefault();
-            if (currentIndex < items.length - 1) {
-                currentIndex++;
-            } else {
-                currentIndex = 0;
-            }
-            items.forEach(item => item.classList.remove('active'));
-            items[currentIndex].classList.add('active');
-            items[currentIndex].scrollIntoView({ block: 'nearest' });
-        }
-
-        if (event.key === 'ArrowUp') {
-            event.preventDefault();
-            if (currentIndex > 0) {
-                currentIndex--;
-            } else {
-                currentIndex = items.length - 1;
-            }
-            items.forEach(item => item.classList.remove('active'));
-            items[currentIndex].classList.add('active');
-            items[currentIndex].scrollIntoView({ block: 'nearest' });
-        }
-
-        if (event.key === 'Enter' && currentIndex >= 0) {
-            event.preventDefault();
-            items[currentIndex].querySelector('a').click();
-        }
-    });
-</script>
 
 </body>
 </html>

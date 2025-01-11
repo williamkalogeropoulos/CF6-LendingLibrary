@@ -56,7 +56,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+        return bookRepository.findAll(); // ✅ Now properly fetches all books
     }
 
     @Override
@@ -67,36 +67,16 @@ public class BookServiceImpl implements BookService {
             book.setTitle(title);
             book.setAuthor(author);
             book.setIsbn(isbn);
-            book.setAvailable(true);
-            bookRepository.save(book);
+            book.setAvailable(true); // ✅ Ensure books are marked available when updated
+            bookRepository.save(book);  // ✅ Save the updated book
         } else {
             throw new RuntimeException("Book not found with ID: " + id);
         }
     }
 
     @Override
-    @Transactional
+    @Transactional // ✅ Ensures the query runs in a transaction
     public void resetAllBooks() {
         bookRepository.updateAllBooksToAvailable();
-    }
-
-    @Override
-    public List<Book> searchBooks(String query) {
-        return bookRepository.findByTitleContainingIgnoreCase(query);
-    }
-
-    @Override
-    public List<Book> searchBooksByAuthor(String author) {
-        return bookRepository.findByAuthorContainingIgnoreCase(author);
-    }
-
-    @Override
-    public List<Book> searchBooksByTitleAndAuthor(String query, String author) {
-        return bookRepository.findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(query, author);
-    }
-
-    @Override
-    public Book findByIsbn(String isbn) {
-        return (Book) bookRepository.findByIsbn(isbn);
     }
 }

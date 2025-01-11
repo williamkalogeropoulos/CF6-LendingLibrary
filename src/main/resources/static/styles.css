@@ -38,35 +38,3 @@ h1 {
     color: white;
     cursor: not-allowed;
 }
-
-/* Search Bar Styling */
-#bookSearchForm {
-    width: 300px;
-    transition: width 0.3s ease-in-out;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-#bookSearch {
-    flex-grow: 1;
-    margin-right: 15px; /* Ensures constant spacing between search input and button */
-}
-
-#searchResultsDropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: white;
-    z-index: 1000;
-    max-height: 300px;
-    overflow-y: auto;
-    border-radius: 0.25rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.list-group-item.active {
-    background-color: #007bff;
-    color: white;
-}

@@ -14,10 +14,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT b FROM Book b WHERE b.available = true")
     List<Book> findByAvailableTrue(); // Find only available books
     List<Book> findByIsbn(String ISBN); // find books with ISBN
-    List<Book> findByTitleContainingIgnoreCase(String title);
-    List<Book> findByAuthorContainingIgnoreCase(String author);
 
-    List<Book> findByTitleContainingIgnoreCaseAndAuthorContainingIgnoreCase(String title, String author);
 
     @Modifying
     @Transactional
