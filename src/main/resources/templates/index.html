@@ -10,18 +10,26 @@
         <h1 class="display-4">Welcome to the Lending Library</h1>
         <p class="lead">Your gateway to a world of knowledge. Borrow, explore, and expand your horizons with our collection of books.</p>
 
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <h2>Browse Our Collection</h2>
-                <p>Discover a vast selection of books from various genres and authors.</p>
-                <a href="/books" class="btn btn-primary">View Books</a>
-            </div>
-            <div class="col-md-6">
-                <h2 th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Manage Your Books</h2>
-                <p th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Admins can add, update, and remove books from the collection.</p>
-                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/books/manage" class="btn btn-warning">Manage Books</a>
+        <div class="tab-content mt-3">
+            <div class="row mt-5 text-center">
+                <div class="col-md-4">
+                    <h2>Browse Our Collection</h2>
+                    <p>Discover a vast selection of books from various genres and authors.</p>
+                    <a href="/books" class="btn btn-primary">Search for Books</a>
+                </div>
+                <div class="col-md-4">
+                    <h2>My Borrowed Books</h2>
+                    <p>Keep track of your borrowed books.</p>
+                    <a href="/my-borrowings" class="btn btn-primary">Borrowed Books</a>
+                </div>
+                <div class="col-md-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <h2>Manage Your Books</h2>
+                    <p>Admins can add, update, and remove books from the collection.</p>
+                    <a href="/books/manage" class="btn btn-warning">Manage Books</a>
+                </div>
             </div>
         </div>
     </div>
+
 </body>
 </html>
