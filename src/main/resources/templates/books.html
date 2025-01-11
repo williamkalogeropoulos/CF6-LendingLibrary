@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-    <title>View Books</title>
+    <title>Search Books</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
     <script>
@@ -39,7 +39,7 @@
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
 
 <div class="container mt-4">
-    <h1 class="text-center">View Books</h1>
+    <h1 class="text-center">Search Books</h1>
 
     <!-- Book Table -->
     <table class="table table-striped table-bordered">
@@ -69,38 +69,6 @@
                 </button>
             </td>
         </tr>
-        <div sec:authorize="hasRole('ADMIN')" class="text-center mt-3">
-            <button type="button" class="btn btn-warning reset-books-button">Reset All Books</button>
-        </div>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const resetButton = document.querySelector(".reset-books-button");
-                if (resetButton) {
-                    resetButton.addEventListener("click", function () {
-                        if (confirm("Are you sure you want to reset all books to available?")) {
-                            fetch("/api/books/reset-availability", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" }
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.text().then(text => { throw new Error(text); });
-                                    }
-                                    return response.text();
-                                })
-                                .then(message => {
-                                    alert(message);
-                                    location.reload();
-                                })
-                                .catch(error => {
-                                    console.error("Error:", error);
-                                    alert("Error resetting books: " + error.message);
-                                });
-                        }
-                    });
-                }
-            });
-        </script>
         </tbody>
     </table>
 </div>
