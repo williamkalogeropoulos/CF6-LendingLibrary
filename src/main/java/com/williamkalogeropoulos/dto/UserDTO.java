@@ -14,7 +14,7 @@ public class UserDTO {
     public UserDTO() {}
 
     // ✅ Correct Constructor
-    public UserDTO(Long id, String username, Role role) {
+    public UserDTO(Long id, String username,String email, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;

@@ -28,19 +28,21 @@ public class User implements UserDetails {
     @Column(nullable = false) // Ensures role is not null
     private Role role; // ENUM: USER or ADMIN
 
-    // Constructors
+    // ✅ Default Constructor (Required by JPA)
     public User() {}
 
-    public User(String username, String password, Role role) {
+    // ✅ Constructor including email
+    public User(String username, String password, String email, Role role) {
         this.username = username;
         this.password = password;
+        this.email = email;  // ✅ Now email is correctly assigned
         this.role = role;
-        this.email = email;
     }
 
     // Getters
     public Long getId() { return id; }
     public String getUsername() { return username; }
+    public String getEmail() { return email; } // ✅ Ensure email getter is present
     public Role getRole() { return role; }
 
     @Override
@@ -61,9 +63,9 @@ public class User implements UserDetails {
     public boolean isEnabled() { return true; }
 
     // Proper Setter Methods
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    public void setUsername(String username) { this.username = username; }
+
+    public void setEmail(String email) { this.email = email; } // ✅ Setter for email
 
     public void setPassword(String password) {
         if (password != null && !password.isEmpty()) {
@@ -72,13 +74,9 @@ public class User implements UserDetails {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
     }
-    public void setRole(Role role) {
-        this.role = role;
-    }
+
+    public void setRole(Role role) { this.role = role; }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Borrowing> borrowings;
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
 }

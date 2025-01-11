@@ -5,6 +5,6 @@ import com.williamkalogeropoulos.entity.User;
 
 public class UserMapper {
     public static UserDTO toDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getRole());
+        return new UserDTO(user.getId(), user.getUsername(),user.getEmail(), user.getRole());
     }
 }

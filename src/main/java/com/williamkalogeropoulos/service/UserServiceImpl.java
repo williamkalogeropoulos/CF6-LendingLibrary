@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getRole()))
+                .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
                 .collect(Collectors.toList());
     }
 
@@ -97,13 +97,23 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
+            // ✅ Update username if provided
             if (userDTO.getUsername() != null && !userDTO.getUsername().trim().isEmpty()) {
                 user.setUsername(userDTO.getUsername());
             }
 
-            // ✅ Fix: Convert Role from String to Enum before setting it
+            // ✅ Update email if provided
+            if (userDTO.getEmail() != null && !userDTO.getEmail().trim().isEmpty()) {
+                user.setEmail(userDTO.getEmail());
+            }
+
+// ✅ Update role safely (no need for .valueOf() since it's already an Enum)
             if (userDTO.getRole() != null) {
-                user.setRole(userDTO.getRole()); // ✅ Directly set Enum (No .trim())
+                try {
+                    user.setRole(userDTO.getRole()); // ✅ Directly set Enum
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException("Invalid role: " + userDTO.getRole());
+                }
             }
 
             userRepository.save(user);
