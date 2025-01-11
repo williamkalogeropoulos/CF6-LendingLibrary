@@ -9,6 +9,8 @@ public interface BookService {
     BookDTO getBookById(Long id);
     List<BookDTO> getBooksByIsbn(String ISBN);
     Book saveBook(Book book);
+
+    // ✅ Updated deleteBook method to prevent foreign key constraint issues
     void deleteBook(Long id);
 
     // ✅ Added method to fetch all books for the UI
@@ -17,4 +19,7 @@ public interface BookService {
     void updateBook(Long id, String title, String author, String isbn);
 
     void resetAllBooks();
+
+    // ✅ New method to check if a book is currently borrowed before deleting
+    boolean isBookCurrentlyBorrowed(Long bookId);
 }

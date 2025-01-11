@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+<div class="top-background"></div>
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
 
 <div class="container mt-4">
@@ -37,12 +38,26 @@
             <td th:text="${borrowing.borrowDate}"></td>
             <td th:text="${borrowing.returnDate != null ? borrowing.returnDate : 'Not Returned'}"></td>
             <td th:text="${borrowing.overdueCharges} + ' €'"></td>
-            <td>
+            <td class="text-center">
+                <!-- Button for users to return their own books -->
+                <button type="button" class="btn btn-primary w-100"
+                        th:data-borrowing-id="${borrowing.id}"
+                        sec:authorize="isAuthenticated()"
+                        th:if="${borrowing.username == #authentication.name}"
+                        th:disabled="${borrowing.returnDate != null}"
+                        th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-primary'}"
+                        th:text="${borrowing.returnDate == null ? 'Return' : 'Book Returned'}"
+                        onclick="returnBook(this.getAttribute('data-borrowing-id'))">
+                </button>
+
+                <!-- Button for admins to return any book -->
                 <button type="button" class="btn btn-danger w-100"
                         th:data-borrowing-id="${borrowing.id}"
-                        th:disabled="${borrowing.returnDate != null}"
-                        th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-danger'}"
-                        th:text="${borrowing.returnDate == null ? 'Return' : 'Book Returned'}">
+                        sec:authorize="hasAuthority('ROLE_ADMIN')"
+                th:disabled="${borrowing.returnDate != null}"
+                th:classappend="${borrowing.returnDate != null ? 'btn-secondary' : 'btn-danger'}"
+                th:text="${borrowing.returnDate == null ? 'Admin Return' : 'Book Returned'}"
+                onclick="adminReturnBook(this.getAttribute('data-borrowing-id'))">
                 </button>
             </td>
         </tr>
@@ -51,29 +66,43 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".btn-danger").forEach(button => {
-            button.addEventListener("click", function () {
-                const borrowingId = this.getAttribute("data-borrowing-id");
-
-                fetch(`/api/borrowings/${borrowingId}/return`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" }
-                })
-                    .then(response => {
-                        if (!response.ok) throw new Error("Failed to return book.");
-                        return response.text();
-                    })
-                    .then(message => {
-                        alert(message);
-                        location.reload(); // Refresh to reflect changes
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        alert("Error returning book.");
-                    });
+    function returnBook(borrowingId) {
+        fetch(`/api/borrowings/${borrowingId}/return`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to return book.");
+                return response.text();
+            })
+            .then(message => {
+                alert(message);
+                location.reload(); // Refresh to reflect changes
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error returning book.");
             });
-        });
+    }
+
+    function adminReturnBook(borrowingId) {
+        fetch(`/api/borrowings/${borrowingId}/admin-return`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to return book.");
+                return response.text();
+            })
+            .then(message => {
+                alert(message);
+                location.reload(); // Refresh to reflect changes
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error returning book.");
+            });
+    }
 
     function sortTable(n) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -102,7 +131,7 @@
             if (shouldSwitch) {
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
-                switchcount ++;
+                switchcount++;
             } else {
                 if (switchcount == 0 && dir == "asc") {
                     dir = "desc";

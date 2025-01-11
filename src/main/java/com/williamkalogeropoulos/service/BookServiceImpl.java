@@ -2,6 +2,7 @@ package com.williamkalogeropoulos.service;
 
 import com.williamkalogeropoulos.dto.BookDTO;
 import com.williamkalogeropoulos.entity.Book;
+import com.williamkalogeropoulos.repository.BorrowingRepository;
 import com.williamkalogeropoulos.mapper.BookMapper;
 import com.williamkalogeropoulos.repository.BookRepository;
 import jakarta.transaction.Transactional;
@@ -15,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final BorrowingRepository borrowingRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository, BorrowingRepository borrowingRepository) {
         this.bookRepository = bookRepository;
+        this.borrowingRepository = borrowingRepository;
     }
 
     @Override
@@ -50,7 +53,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteBook(Long id) {
+        if (isBookCurrentlyBorrowed(id)) {
+            throw new RuntimeException("Cannot delete book: It is currently borrowed.");
+        }
+
         bookRepository.deleteById(id);
     }
 
@@ -78,5 +86,10 @@ public class BookServiceImpl implements BookService {
     @Transactional // ✅ Ensures the query runs in a transaction
     public void resetAllBooks() {
         bookRepository.updateAllBooksToAvailable();
+    }
+
+    @Override
+    public boolean isBookCurrentlyBorrowed(Long bookId) {
+        return borrowingRepository.existsByBookIdAndReturnDateIsNull(bookId);
     }
 }

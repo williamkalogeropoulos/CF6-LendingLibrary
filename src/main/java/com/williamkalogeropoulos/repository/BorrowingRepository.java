@@ -9,9 +9,15 @@ import java.util.List;
 
 @Repository
 public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
-    // ✅ Ensure the correct return type (List<Borrowing>) instead of KeyValues
+    // ✅ Finds all borrowings by a user
     List<Borrowing> findByUser(User user);
 
-    // ✅ Ensure this method correctly finds active borrowings
+    // ✅ Finds all currently active borrowings (not returned)
     List<Borrowing> findByReturnDateIsNull();
+
+    // ✅ Checks if a book is currently borrowed
+    boolean existsByBookIdAndReturnDateIsNull(Long bookId);
+
+    // ✅ Deletes all borrowings related to a book before deleting the book
+    void deleteByBookId(Long bookId);
 }

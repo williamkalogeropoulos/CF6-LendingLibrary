@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,10 +41,18 @@ public class BorrowingController {
         return ResponseEntity.ok(borrowingService.borrowBook(userDetails.getUsername(), bookId));
     }
 
-    @Operation(summary = "Return a book", description = "Allows the logged-in user to return a book")
+    @Operation(summary = "Return a book (User)", description = "Allows the logged-in user to return their own book")
     @PostMapping("/{id}/return")
     public ResponseEntity<String> returnBook(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long id) {
         borrowingService.returnBook(userDetails.getUsername(), id);
         return ResponseEntity.ok("Book returned successfully");
+    }
+
+    @Operation(summary = "Admin return any book", description = "Allows an admin to return any user's borrowed book")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/{id}/admin-return")
+    public ResponseEntity<String> adminReturnBook(@PathVariable Long id) {
+        borrowingService.adminReturnBook(id);
+        return ResponseEntity.ok("Book returned successfully by admin");
     }
 }

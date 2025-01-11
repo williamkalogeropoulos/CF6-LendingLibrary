@@ -26,8 +26,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())  // ✅ Disable CSRF for API requests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/register").permitAll() // ✅ Allow public user registration
+                        .requestMatchers("/api/users/**").hasRole("ADMIN") // ✅ Only admins can access user management
+                        .requestMatchers("/api/borrowings/my-borrowings").authenticated() // ✅ Users can see their own borrowings
+                        .requestMatchers("/api/borrowings/{id}/return").authenticated() // ✅ Users can return their own books
+                        .requestMatchers("/api/borrowings/{id}/admin-return").hasRole("ADMIN") // ✅ Only admins can return any book
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

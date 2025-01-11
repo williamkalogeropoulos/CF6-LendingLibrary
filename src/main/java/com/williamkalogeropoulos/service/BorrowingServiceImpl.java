@@ -92,6 +92,10 @@ public class BorrowingServiceImpl implements BorrowingService {
             throw new RuntimeException("You can only return books you borrowed");
         }
 
+        if (borrowing.getReturnDate() != null) {
+            throw new RuntimeException("Book has already been returned");
+        }
+
         borrowing.setReturnDate(LocalDate.now());
 
         Book book = borrowing.getBook();
@@ -99,6 +103,26 @@ public class BorrowingServiceImpl implements BorrowingService {
         bookRepository.save(book); // ✅ Save book update immediately
 
         borrowingRepository.save(borrowing); // ✅ Now save the borrowing record
+
+        return BorrowingMapper.toDTO(borrowing);
+    }
+
+    @Override
+    public BorrowingDTO adminReturnBook(Long borrowingId) {
+        Borrowing borrowing = borrowingRepository.findById(borrowingId)
+                .orElseThrow(() -> new RuntimeException("Borrowing record not found"));
+
+        if (borrowing.getReturnDate() != null) {
+            throw new RuntimeException("Book has already been returned");
+        }
+
+        borrowing.setReturnDate(LocalDate.now());
+
+        Book book = borrowing.getBook();
+        book.setAvailable(true); // ✅ Mark book as available
+        bookRepository.save(book); // ✅ Save book update immediately
+
+        borrowingRepository.save(borrowing); // ✅ Save borrowing record update
 
         return BorrowingMapper.toDTO(borrowing);
     }
