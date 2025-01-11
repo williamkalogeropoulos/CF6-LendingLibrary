@@ -4,34 +4,49 @@
     <title>Welcome to the Lending Library</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script> <!-- Replace with your FontAwesome Kit -->
 </head>
 <body>
 <div class="top-background"></div>
 <div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
-    <div class="container mt-4 text-center">
-        <h1 class="display-4">Welcome to the Lending Library</h1>
-        <p class="lead">Your gateway to a world of knowledge. Borrow, explore, and expand your horizons with our collection of books.</p>
 
-        <div class="tab-content mt-3">
-            <div class="row mt-5 text-center">
-                <div class="col-md-4">
-                    <h2>Browse Our Collection</h2>
-                    <p>Discover a vast selection of books from various genres and authors.</p>
-                    <a href="/books" class="btn btn-primary">Search for Books</a>
-                </div>
-                <div class="col-md-4">
-                    <h2>My Borrowed Books</h2>
-                    <p>Keep track of your borrowed books.</p>
-                    <a href="/my-borrowings" class="btn btn-primary">Borrowed Books</a>
-                </div>
-                <div class="col-md-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-                    <h2>Manage Your Books</h2>
-                    <p>Admins can add, update, and remove books from the collection.</p>
-                    <a href="/books/manage" class="btn btn-warning">Manage Books</a>
-                </div>
-            </div>
+<div class="container mt-5 text-center">
+    <h1 class="display-4">
+        <i class="fas fa-book"></i> <!-- Book Icon -->
+        Welcome to the <span class="text-primary">Lending Library</span>
+    </h1>
+    <p class="lead text-muted">
+        Your gateway to a world of knowledge. Borrow, explore, and expand your horizons with our collection of books.
+    </p>
+
+    <!-- Hero Section -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-10">
+            <img src="/images/library-banner.jpg" alt="Library" class="img-fluid rounded shadow-lg">
         </div>
     </div>
 
+    <!-- Features Section -->
+    <div class="row mt-5 text-center">
+        <div class="col-md-4">
+            <i class="fas fa-search fa-3x text-primary"></i>
+            <h2 class="mt-3">Browse Our Collection</h2>
+            <p>Discover a vast selection of books from various genres and authors.</p>
+            <a href="/books" class="btn btn-primary">Search for Books</a>
+        </div>
+        <div class="col-md-4" th:if="${#authorization.expression('hasRole(''USER'')')}">
+            <i class="fas fa-book-reader fa-3x text-success"></i>
+            <h2 class="mt-3">My Borrowed Books</h2>
+            <p>Keep track of your borrowed books and manage due dates.</p>
+            <a href="/my-borrowings" class="btn btn-success">Borrowed Books</a>
+        </div>
+        <div class="col-md-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <i class="fas fa-tools fa-3x text-warning"></i>
+            <h2 class="mt-3">Manage Your Books</h2>
+            <p>Admins can add, update, and remove books from the collection.</p>
+            <a href="/books/manage" class="btn btn-warning">Manage Books</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>

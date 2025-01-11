@@ -21,6 +21,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true, nullable = false) // ✅ Ensure email is unique
+    private String email;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false) // Ensures role is not null
     private Role role; // ENUM: USER or ADMIN
@@ -32,6 +35,7 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.email = email;
     }
 
     // Getters
@@ -68,7 +72,6 @@ public class User implements UserDetails {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
     }
-
     public void setRole(Role role) {
         this.role = role;
     }
@@ -76,4 +79,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Borrowing> borrowings;
 
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }

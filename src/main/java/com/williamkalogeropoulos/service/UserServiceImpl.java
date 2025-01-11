@@ -45,6 +45,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void registerUser(User user) {
+        // ✅ Check if username already exists
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists.");
+        }
+
+        // ✅ Encrypt password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // ✅ Assign default role USER
+        user.setRole(Role.USER);
+
+        userRepository.save(user);
+    }
+
+    @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getRole()))
@@ -74,6 +90,7 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
     @Override
     public boolean updateUser(Long id, UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findById(id);

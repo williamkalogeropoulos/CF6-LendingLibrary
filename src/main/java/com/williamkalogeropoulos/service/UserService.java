@@ -11,6 +11,7 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     boolean updateUserRole(Long id, String role);
     boolean deleteUser(Long id);
+    boolean updateUser(Long id, UserDTO userDTO); // ✅ Allows updating user details
 
-    boolean updateUser(Long id, UserDTO userDTO); // ✅ Added this method
+    void registerUser(User user); // ✅ New method for user registration
 }
