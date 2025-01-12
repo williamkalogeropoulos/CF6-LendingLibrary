@@ -19,25 +19,39 @@
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/about-us">About Us</a>
+                    <hr class="text-light my-1"> <!-- Top line -->
+                    <a class="nav-link py-2 px-3" href="/about-us">About Us</a>
+                    <hr class="text-light my-1"> <!-- Bottom line -->
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/books">Search Books</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/books">Search Books</a>
+                    <hr class="text-light my-1">
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" href="/books/manage">Manage Books</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/books/manage">Manage Books</a>
+                    <hr class="text-light my-1">
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" href="/manage-users">Manage Users</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/manage-users">Manage Users</a>
+                    <hr class="text-light my-1">
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" href="/admin/borrowings">Manage Borrowed Books</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/admin/borrowings">Manage Borrowed Books</a>
+                    <hr class="text-light my-1">
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('USER')">
-                    <a class="nav-link" href="/my-borrowings">Borrowed Books</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/my-borrowings">Borrowed Books</a>
+                    <hr class="text-light my-1">
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact-us">Contact Us</a>
+                    <hr class="text-light my-1">
+                    <a class="nav-link py-2 px-3" href="/contact-us">Contact Us</a>
+                    <hr class="text-light my-1">
                 </li>
             </ul>
         </div>

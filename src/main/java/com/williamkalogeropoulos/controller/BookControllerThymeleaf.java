@@ -3,6 +3,9 @@ package com.williamkalogeropoulos.controller;
 import com.williamkalogeropoulos.dto.BookDTO;
 import com.williamkalogeropoulos.entity.Book;
 import com.williamkalogeropoulos.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +23,27 @@ public class BookControllerThymeleaf {
     }
 
     @GetMapping
-    public String listBooks(Model model) {
-        List<Book> books = bookService.getAllBooks();
-        model.addAttribute("books", books);
+    public String listBooks(Model model,
+                            @RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookService.getPaginatedBooks(pageable);
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
         return "books";
     }
 
     @GetMapping("/manage")
     @PreAuthorize("hasRole('ADMIN')")
-    public String manageBooks(Model model) {
-        List<Book> books = bookService.getAllBooks();
-        model.addAttribute("books", books);
+    public String manageBooks(Model model,
+                              @RequestParam(defaultValue = "0") int page,
+                              @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookService.getPaginatedBooks(pageable);
+        model.addAttribute("bookPage", bookPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
         return "manage-books";
     }
 

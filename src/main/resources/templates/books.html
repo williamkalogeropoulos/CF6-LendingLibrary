@@ -39,11 +39,11 @@
             <th>Author</th>
             <th>ISBN</th>
             <th>Availability</th>
-            <th sec:authorize="hasRole('USER')">Action</th> <!-- ✅ Show Action column only for USERS -->
+            <th sec:authorize="hasRole('USER')">Action</th>
         </tr>
         </thead>
         <tbody id="booksTable">
-        <tr th:each="book : ${books}">
+        <tr th:each="book : ${bookPage.content}">
             <td th:text="${book.id}"></td>
             <td th:text="${book.title}"></td>
             <td th:text="${book.author}"></td>
@@ -65,6 +65,26 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <a class="btn btn-outline-primary"
+           th:if="${currentPage > 0}"
+           th:href="@{/books(page=${currentPage - 1})}">
+            ← Previous
+        </a>
+
+        <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+
+        <a class="btn btn-outline-primary"
+           th:if="${currentPage + 1 < totalPages}"
+           th:href="@{/books(page=${currentPage + 1})}">
+            Next →
+        </a>
+    </div>
+    <footer>
+        <p>&copy; 2025 CF6 Lending Library. All rights reserved.</p>
+    </footer>
 </div>
 
 <!-- OpenLibrary API Integration -->

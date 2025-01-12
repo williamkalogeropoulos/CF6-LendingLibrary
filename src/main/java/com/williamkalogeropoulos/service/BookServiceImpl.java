@@ -7,6 +7,8 @@ import com.williamkalogeropoulos.mapper.BookMapper;
 import com.williamkalogeropoulos.repository.BookRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -91,5 +93,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean isBookCurrentlyBorrowed(Long bookId) {
         return borrowingRepository.existsByBookIdAndReturnDateIsNull(bookId);
+    }
+    @Override
+    public Page<Book> getPaginatedBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 }
