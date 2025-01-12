@@ -40,6 +40,7 @@
             <th>ISBN</th>
             <th>Availability</th>
             <th sec:authorize="hasRole('USER')">Action</th>
+
         </tr>
         </thead>
         <tbody id="booksTable">
@@ -82,9 +83,6 @@
             Next →
         </a>
     </div>
-    <footer>
-        <p>&copy; 2025 CF6 Lending Library. All rights reserved.</p>
-    </footer>
 </div>
 
 <!-- OpenLibrary API Integration -->
@@ -176,6 +174,31 @@
             });
         }
     })
+    document.querySelectorAll(".borrow-button").forEach(button => {
+        if (!button.disabled) {  // Prevents disabled buttons from being clickable
+            button.addEventListener("click", function () {
+                const bookId = this.getAttribute("data-book-id");
+                fetch(`/api/borrowings/${bookId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Failed to borrow book");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        alert("Book borrowed successfully!");
+                        location.reload();
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Error borrowing book");
+                    });
+            });
+        }
+    });
 </script>
 </body>
 </html>
