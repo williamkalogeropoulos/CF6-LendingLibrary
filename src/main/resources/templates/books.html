@@ -47,7 +47,9 @@
             <td th:text="${book.id}"></td>
             <td th:text="${book.title}"></td>
             <td th:text="${book.author}"></td>
-            <td th:text="${book.isbn}"></td>
+            <td>
+                <a href="#" class="isbn-link" th:attr="data-isbn=${book.isbn}" th:text="${book.isbn}"></a>
+            </td>
             <td>
                 <span th:classappend="${book.available ? 'text-success' : 'text-danger'}"
                       th:text="${book.available ? 'Available' : 'Unavailable'}"></span>
@@ -65,6 +67,7 @@
     </table>
 </div>
 
+<!-- OpenLibrary API Integration -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let activeSearchType = "author"; // Default search type
@@ -92,33 +95,67 @@
             });
         }
 
-        // Borrow button functionality
-        document.querySelectorAll(".borrow-button").forEach(button => {
-            if (!button.disabled) {  // Prevents disabled buttons from being clickable
-                button.addEventListener("click", function () {
-                    const bookId = this.getAttribute("data-book-id");
-                    fetch(`/api/borrowings/${bookId}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" }
+        // Fetch book details from OpenLibrary API
+        document.querySelectorAll(".isbn-link").forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault();
+                const isbn = this.dataset.isbn;
+                document.querySelectorAll(".popup").forEach(popup => popup.remove()); // Close previous popups
+
+                fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const bookData = data[`ISBN:${isbn}`];
+                        if (bookData) {
+                            fetchAdditionalBookDetails(bookData, isbn);
+                        } else {
+                            alert("Book details not found.");
+                        }
                     })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Failed to borrow book");
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            alert("Book borrowed successfully!");
-                            location.reload();
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            alert("Error borrowing book");
-                        });
-                });
-            }
+                    .catch(error => console.error("Error fetching book data:", error));
+            });
         });
-    });
+
+        function fetchAdditionalBookDetails(bookData, isbn) {
+            fetch(`https://openlibrary.org/works/${bookData.key}.json`)
+                .then(response => response.json())
+                .then(workData => {
+                    showPopup(bookData, workData);
+                })
+                .catch(error => {
+                    console.error("Error fetching additional book data:", error);
+                    showPopup(bookData, null);
+                });
+        }
+
+        function showPopup(bookData, workData) {
+            let popup = document.createElement("div");
+            popup.classList.add("popup");
+
+            let authors = bookData.authors ? bookData.authors.map(a => a.name).join(", ") : "Unknown";
+            let firstPublishYear = workData && workData.first_publish_date ? workData.first_publish_date : "Unknown";
+            let starRating = workData && workData.ratings_average ? workData.ratings_average.toFixed(1) : "No rating available.";
+            let numEditions = workData && workData.edition_count ? workData.edition_count : "Unknown";
+
+            popup.innerHTML = `
+        <div class="popup-content">
+            <span class="close-popup">&times;</span>
+            <h2>${bookData.title}</h2>
+            <img src="${bookData.cover ? bookData.cover.medium : 'default-image.jpg'}" alt="Book Cover">
+            <p><strong>Author:</strong> ${authors}</p>
+            <p><strong>Star Rating:</strong> ${starRating}</p>
+            <p><strong>First Publish Year:</strong> ${firstPublishYear}</p>
+            <p><strong>Number of Editions:</strong> ${numEditions}</p>
+        </div>
+    `;
+
+            document.body.appendChild(popup);
+
+            popup.querySelector(".close-popup").addEventListener("click", function () {
+                popup.remove();
+            });
+        }
+    })
 </script>
 </body>
 </html>
