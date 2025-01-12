@@ -7,10 +7,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark position-sticky top-0">
     <div class="container-fluid">
         <!-- Left-aligned brand -->
-        <a class="navbar-brand me-auto" href="/">Lending Library</a>
+        <a class="navbar-brand me-auto" href="/">CF6 Lending Library</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -31,7 +31,7 @@
                     <a class="nav-link" href="/manage-users">Manage Users</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" href="/admin/borrowings">Admin Borrowings</a>
+                    <a class="nav-link" href="/admin/borrowings">Manage Borrowed Books</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('USER')">
                     <a class="nav-link" href="/my-borrowings">Borrowed Books</a>

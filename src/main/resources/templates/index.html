@@ -48,6 +48,18 @@
             <p>Admins can add, update, and remove books from the collection.</p>
             <a href="/books/manage" class="btn btn-warning">Manage Books</a>
         </div>
+        <div class="col-md-3 text-center mb-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <i class="fas fa-tools fa-3x text-warning"></i>
+            <h2 class="mt-3">Manage Users</h2>
+            <p>Admins can add, update, and remove users from the library database.</p>
+            <a href="/manage-users" class="btn btn-warning">Manage Users</a>
+        </div>
+        <div class="col-md-3 text-center mb-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <i class="fas fa-tools fa-3x text-warning"></i>
+            <h2 class="mt-3">Manage Borrowed Books</h2>
+            <p>Admins can keep track of user borrowed books and return them with admin privileges.</p>
+            <a href="/admin/borrowings" class="btn btn-warning">Manage Borrowed Books</a>
+        </div>
     </div>
 </div>
 </body>
