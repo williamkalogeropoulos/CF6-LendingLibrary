@@ -20,27 +20,29 @@
     </p>
 
     <!-- Hero Section -->
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-10">
-            <img src="/images/library-banner.jpg" alt="Library" class="img-fluid rounded shadow-lg">
+    <div class="hero-section">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-10">
+                <img src="/images/library-banner.jpg" alt="Library" class="img-fluid rounded shadow-lg">
+        </div>
         </div>
     </div>
 
     <!-- Features Section -->
-    <div class="row mt-5 text-center">
-        <div class="col-md-4">
+    <div class="row mt-5 d-flex flex-wrap justify-content-center gap-4">
+        <div class="col-md-3 text-center mb-4">
             <i class="fas fa-search fa-3x text-primary"></i>
             <h2 class="mt-3">Browse Our Collection</h2>
             <p>Discover a vast selection of books from various genres and authors.</p>
             <a href="/books" class="btn btn-primary">Search for Books</a>
         </div>
-        <div class="col-md-4" th:if="${#authorization.expression('hasRole(''USER'')')}">
+        <div class="col-md-3 text-center mb-4" th:if="${#authorization.expression('hasRole(''USER'')')}">
             <i class="fas fa-book-reader fa-3x text-success"></i>
             <h2 class="mt-3">My Borrowed Books</h2>
             <p>Keep track of your borrowed books and manage due dates.</p>
             <a href="/my-borrowings" class="btn btn-success">Borrowed Books</a>
         </div>
-        <div class="col-md-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <div class="col-md-3 text-center mb-4" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
             <i class="fas fa-tools fa-3x text-warning"></i>
             <h2 class="mt-3">Manage Your Books</h2>
             <p>Admins can add, update, and remove books from the collection.</p>

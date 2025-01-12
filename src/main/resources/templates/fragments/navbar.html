@@ -9,18 +9,21 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Lending Library</a>
+        <!-- Left-aligned brand -->
+        <a class="navbar-brand me-auto" href="/">Lending Library</a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/about-us">About Us</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/books">Search Books</a>
                 </li>
-
-                <!-- Admin-only links -->
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" href="/books/manage">Manage Books</a>
                 </li>
@@ -30,36 +33,36 @@
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" href="/admin/borrowings">Admin Borrowings</a>
                 </li>
-
-                <!-- User-only link -->
                 <li class="nav-item" sec:authorize="hasRole('USER')">
                     <a class="nav-link" href="/my-borrowings">Borrowed Books</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact-us">Contact Us</a>
+                </li>
             </ul>
-
-            <!-- Logout Button aligned to the right -->
-            <form class="d-flex" th:action="@{/logout}" method="post">
-                <button class="btn btn-outline-light px-3" type="submit">Logout</button>
-            </form>
-
-            <!-- JavaScript to redirect after logout -->
-            <script>
-                document.querySelector("form[th\\:action='/logout']").addEventListener("submit", function(event) {
-                    event.preventDefault(); // Prevent default form submission
-                    fetch('/logout', { method: 'POST' })
-                        .then(response => {
-                            if (response.ok) {
-                                window.location.href = "/login"; // ✅ Redirect to login page after logout
-                            } else {
-                                alert("Logout failed!");
-                            }
-                        })
-                        .catch(error => console.error("Logout error:", error));
-                });
-            </script>
         </div>
+
+        <!-- Right-aligned Logout Button -->
+        <form class="d-flex ms-auto" th:action="@{/logout}" method="post">
+            <button class="btn btn-outline-light px-3" type="submit">Logout</button>
+        </form>
     </div>
 </nav>
+
+<script>
+    document.querySelector("form[th\\:action='/logout']").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+        fetch('/logout', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = "/login"; // ✅ Redirect to login page after logout
+                } else {
+                    alert("Logout failed!");
+                }
+            })
+            .catch(error => console.error("Logout error:", error));
+    });
+</script>
 
 </body>
 </html>

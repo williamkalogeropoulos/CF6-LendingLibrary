@@ -53,4 +53,13 @@ public class HomeController {
         model.addAttribute("borrowings", borrowingService.getAllActiveBorrowings());
         return "borrowings"; // Maps to borrowings.html
     }
+    @GetMapping("/about-us")
+    public String aboutUs() {
+        return "about-us"; // Name should match about-us.html (without extension)
+    }
+    @GetMapping("/contact-us")
+    public String contactUs() {
+        return "contact-us"; // Matches contact-us.html in templates folder
+    }
 }
+

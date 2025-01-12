@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - CF6 Lending Library</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .content {
+            padding-top: 80px;
+        }
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #333;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        section:hover {
+            transform: scale(1.02);
+        }
+        h2 {
+            color: #007bff;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 10px 0;
+        }
+        .icon {
+            color: #007bff;
+            margin-right: 10px;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .search-bar {
+            margin: 20px 0;
+            padding: 10px;
+            width: 60%;
+            border-radius: 20px;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = document.querySelectorAll("section");
+            sections.forEach(section => {
+                section.addEventListener("click", function() {
+                    this.classList.toggle("expanded");
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="top-background"></div>
+<div th:replace="fragments/navbar.html"></div> <!-- Include Navbar -->
+<div class="content">
+    <section>
+        <h2><i class="fas fa-bullseye icon"></i> Our Mission</h2>
+        <p>The CF6 Lending Library is dedicated to fostering a love for reading and lifelong learning by providing easy access to a vast collection of books.</p>
+        <p>We aim to make knowledge accessible to everyone, regardless of their background, ensuring that literature and education remain a fundamental right.</p>
+        <p>Through partnerships and community programs, we strive to cultivate an environment that encourages curiosity, creativity, and intellectual growth.</p>
+    </section>
+    <section>
+        <h2><i class="fas fa-history icon"></i> Our History</h2>
+        <p>Established in 2020, CF6 Lending Library started as a small book-sharing initiative among friends and family.</p>
+        <p>Over time, it evolved into a full-fledged community library, hosting thousands of books and expanding into digital lending.</p>
+        <p>Today, we are proud to serve thousands of members who rely on us for physical and digital books, reading events, and educational support.</p>
+    </section>
+    <section>
+        <h2><i class="fas fa-book icon"></i> Our Collection</h2>
+        <p>Our library houses an extensive collection of books across multiple genres, catering to different age groups and interests.</p>
+        <p>We constantly update our collection to include contemporary bestsellers, educational resources, and literary classics.</p>
+        <p>In addition to printed books, we offer digital and audiobooks for those who prefer alternative reading formats.</p>
+        <ul>
+            <li><i class="fas fa-check icon"></i> Fiction & Non-fiction</li>
+            <li><i class="fas fa-check icon"></i> Biographies & Memoirs</li>
+            <li><i class="fas fa-check icon"></i> Science & Technology</li>
+            <li><i class="fas fa-check icon"></i> History & Culture</li>
+            <li><i class="fas fa-check icon"></i> Children's Books & Young Adult Fiction</li>
+            <li><i class="fas fa-check icon"></i> Academic & Research Material</li>
+            <li><i class="fas fa-check icon"></i> Digital & Audio Books</li>
+        </ul>
+    </section>
+    <section>
+        <h2><i class="fas fa-users icon"></i> Membership & Services</h2>
+        <p>We offer a variety of membership benefits, from unlimited book borrowing to exclusive literary events.</p>
+        <p>Members gain access to community book discussions, author meet-and-greets, and interactive storytelling sessions.</p>
+        <p>We also provide online reservations, ensuring members can secure books before visiting the library.</p>
+        <ul>
+            <li><i class="fas fa-book-open icon"></i> Unlimited book borrowing</li>
+            <li><i class="fas fa-calendar-alt icon"></i> Access to exclusive reading events</li>
+            <li><i class="fas fa-laptop icon"></i> Digital book reservations</li>
+            <li><i class="fas fa-comments icon"></i> Community book club discussions</li>
+            <li><i class="fas fa-search icon"></i> 24/7 online book catalog</li>
+            <li><i class="fas fa-handshake icon"></i> Volunteer & Internship Opportunities</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2><i class="fas fa-user-friends icon"></i> Meet Our Team</h2>
+        <p>Our dedicated team consists of librarians, volunteers, and book enthusiasts who work tirelessly to curate and maintain our collection.</p>
+        <p>We collaborate with local authors and educators to host book talks, workshops, and creative writing programs.</p>
+        <p>Every team member is passionate about literature and is committed to providing the best reading experience for our members.</p>
+    </section>
+
+    <section>
+        <h2><i class="fas fa-envelope icon"></i> Contact Us</h2>
+        <p>Do you have questions, book requests, or suggestions? We’d love to hear from you!</p>
+        <p>Visit our library, call us, or reach out via email to stay connected with our services and events.</p>
+        <p>Follow us on social media to stay updated on our latest book additions and community activities.</p>
+        <ul>
+            <li><i class="fas fa-envelope icon"></i> Email: contact@cf6library.com</li>
+            <li><i class="fas fa-phone icon"></i> Phone:  210 820 3999</li>
+            <li><i class="fas fa-map-marker-alt icon"></i> Address: Kefallinias 46, Athens, Greece</li>
+            <li><i class="fas fa-clock icon"></i> Hours: Monday - Saturday, 9:00 AM - 5:00 PM</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 CF6 Lending Library. All rights reserved.</p>
+    </footer>
+</div>
+<footer>
+    <p>&copy; 2025 CF6 Lending Library. All rights reserved.</p>
+</footer>
+</body>
+</html>
