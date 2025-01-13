@@ -105,5 +105,5 @@ footer {
 .navbar-brand:hover,
 .custom-logout-btn:hover {
     background-color: transparent !important;
-    color: inherit !important;
+    color: crimson !important;
 }
