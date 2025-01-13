@@ -41,7 +41,8 @@
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" th:field="*{password}" class="form-control" required>
+                            <input type="password" id="password" name="password" th:field="*{password}" class="form-control" required onkeyup="checkPasswordStrength()">
+                            <small id="passwordStrength" class="form-text"></small>
                         </div>
 
                         <button type="submit" class="btn btn-success w-100">Register</button>
@@ -57,28 +58,58 @@
 </div>
 
 <script>
+    function checkPasswordStrength() {
+        let password = document.getElementById("password").value;
+        let strengthText = document.getElementById("passwordStrength");
+
+        if (password.length < 6) {
+            strengthText.innerHTML = "🔴 Weak: Password must be at least 6 characters.";
+            strengthText.style.color = "red";
+        } else if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+            strengthText.innerHTML = "🟠 Medium: Add numbers and uppercase letters for a stronger password.";
+            strengthText.style.color = "orange";
+        } else {
+            strengthText.innerHTML = "🟢 Strong: Good password!";
+            strengthText.style.color = "green";
+        }
+    }
+
     function validateForm() {
         let username = document.getElementById("username").value.trim();
         let email = document.getElementById("email").value.trim();
         let password = document.getElementById("password").value.trim();
+        let strengthText = document.getElementById("passwordStrength").innerHTML;
 
         if (username === "" || email === "" || password === "") {
             alert("All fields are required!");
-            return false;  // Stop form submission
+            return false;
         }
+
+        if (password.length < 6) {
+            alert("❌ Password must be at least 6 characters long!");
+            return false;
+        }
+
+        if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+            alert("⚠️ Password must include at least one uppercase letter and one number!");
+            return false;
+        }
+
+        alert("✅ Registration Successful! Redirecting to login...");
         return true;
     }
 
-    // ✅ Show pop-up and redirect to login after 2 seconds if registration was successful
+    // ✅ Show pop-up and redirect to login after success
     window.onload = function () {
         let successMessage = document.getElementById("successMessage");
         if (successMessage) {
             setTimeout(function () {
                 alert("Registration Successful! Redirecting to login page.");
-                window.location.href = "/login";  // ✅ Redirect after user clicks OK
-            }, 500); // Slight delay before pop-up
+                window.location.href = "/login";
+            }, 500);
         }
     };
 </script>
+
 </body>
 </html>

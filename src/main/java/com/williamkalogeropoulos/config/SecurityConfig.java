@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/styles.css").permitAll() // ✅ Allow register page access
+                        .requestMatchers("/login", "/register", "/forgot-password", "/reset-password", "/styles.css").permitAll() // ✅ Allow forgot password page
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

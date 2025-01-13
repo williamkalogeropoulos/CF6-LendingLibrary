@@ -14,4 +14,7 @@ public interface UserService {
     boolean updateUser(Long id, UserDTO userDTO); // ✅ Allows updating user details
 
     void registerUser(User user); // ✅ New method for user registration
+
+    User getUserByEmail(String email);
+    boolean updatePassword(String email, String newPassword);
 }
