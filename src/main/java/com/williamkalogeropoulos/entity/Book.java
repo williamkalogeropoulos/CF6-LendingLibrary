@@ -2,11 +2,15 @@ package com.williamkalogeropoulos.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 @Entity
 @Table(name = "books")
 public class Book {
+    public Book(long l, String bookOne, String authorOne, String number, boolean b) {
+}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,26 +27,9 @@ public class Book {
     @Column(nullable = false)
     private Boolean available = true;
 
+    public Book() {
+
+    }
+
     // Getters and Setters
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
 }

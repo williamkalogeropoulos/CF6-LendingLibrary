@@ -41,6 +41,11 @@ public class User implements UserDetails {
 
     // Getters
     public Long getId() { return id; }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() { return username; }
     public String getEmail() { return email; } // ✅ Ensure email getter is present
     public Role getRole() { return role; }
