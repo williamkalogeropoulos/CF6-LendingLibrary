@@ -21,6 +21,7 @@ public class RegisterController {
     @GetMapping
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("success", null); // ✅ Add a default value for success
         return "register";
     }
 
@@ -34,13 +35,19 @@ public class RegisterController {
             return "register";
         }
 
-        // ✅ 2. Check if username already exists
+        // ✅ Check if username already exists
         if (userService.getUserByUsername(user.getUsername()) != null) {
             model.addAttribute("error", "Username already exists. Choose another one.");
             return "register";
         }
 
-        // ✅ 3. Register the user and trigger a JavaScript pop-up
+        // ✅ Check if email already exists
+        if (userService.getUserByEmail(user.getEmail()) != null) {
+            model.addAttribute("error", "Email already exists. Try logging in.");
+            return "register";
+        }
+
+        // ✅ 4. Register the user
         userService.registerUser(user);
         model.addAttribute("success", "Registration successful! Redirecting to login...");
         return "register";  // ✅ Stay on the same page to allow JavaScript execution

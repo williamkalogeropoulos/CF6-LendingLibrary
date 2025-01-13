@@ -22,8 +22,8 @@
                         <span th:text="${success}"></span>
                     </div>
 
-                    <!-- Error Message -->
-                    <div th:if="${error}" class="alert alert-danger text-center">
+                    <!-- Error Message (General) -->
+                    <div th:if="${error}" class="alert alert-danger text-center" id="errorMessage">
                         <span th:text="${error}"></span>
                     </div>
 
@@ -37,6 +37,7 @@
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" id="email" name="email" th:field="*{email}" class="form-control" required>
+                            <small id="emailError" class="text-danger"></small>
                         </div>
 
                         <div class="mb-3">
@@ -79,6 +80,7 @@
         let email = document.getElementById("email").value.trim();
         let password = document.getElementById("password").value.trim();
         let strengthText = document.getElementById("passwordStrength").innerHTML;
+        let emailError = document.getElementById("emailError");
 
         if (username === "" || email === "" || password === "") {
             alert("All fields are required!");
@@ -95,18 +97,30 @@
             return false;
         }
 
+        if (emailError && emailError.innerText.trim() !== "") {
+            alert("⚠️ Email already exists! Try logging in.");
+            return false;
+        }
+
         alert("✅ Registration Successful! Redirecting to login...");
         return true;
     }
 
-    // ✅ Show pop-up and redirect to login after success
     window.onload = function () {
         let successMessage = document.getElementById("successMessage");
-        if (successMessage) {
+        let errorMessage = document.getElementById("errorMessage");
+
+        // ✅ Show the success message only if there are no errors
+        if (successMessage && !errorMessage) {
             setTimeout(function () {
                 alert("Registration Successful! Redirecting to login page.");
-                window.location.href = "/login";
+                window.location.href = "/login"; // Redirect to login
             }, 500);
+        }
+
+        // ✅ Handle email already exists error
+        if (errorMessage && errorMessage.innerText.includes("Email already exists")) {
+            document.getElementById("emailError").innerText = "This email is already in use. Try another.";
         }
     };
 </script>

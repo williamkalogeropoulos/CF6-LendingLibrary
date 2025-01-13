@@ -51,6 +51,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Username already exists.");
         }
 
+        // ✅ Check if email already exists
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists.");
+        }
+
         // ✅ Encrypt password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -58,6 +63,11 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.USER);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     @Override
@@ -107,23 +117,15 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(userDTO.getEmail());
             }
 
-// ✅ Update role safely (no need for .valueOf() since it's already an Enum)
+            // ✅ Update role safely (directly set Enum)
             if (userDTO.getRole() != null) {
-                try {
-                    user.setRole(userDTO.getRole()); // ✅ Directly set Enum
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("Invalid role: " + userDTO.getRole());
-                }
+                user.setRole(userDTO.getRole());
             }
 
             userRepository.save(user);
             return true;
         }
         return false;
-    }
-    @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 
     @Override
