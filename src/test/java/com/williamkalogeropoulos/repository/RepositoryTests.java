@@ -91,7 +91,7 @@ class RepositoryTests {
     void testSaveAndFindBorrowingById() {
         User user = new User("testuser", passwordEncoder.encode("password123"), "testuser@example.com", Role.USER);
         Book book = new Book(1L, "Borrowed Book", "Author", "333333333", true);
-        Borrowing borrowing = new Borrowing(user, book, LocalDate.now(), null, 0.0);
+        Borrowing borrowing = new Borrowing(user, book, LocalDate.now(), null, 0.0,true);
         borrowing.setId(1L);
         when(borrowingRepository.save(any(Borrowing.class))).thenReturn(borrowing);
         when(borrowingRepository.findById(1L)).thenReturn(Optional.of(borrowing));

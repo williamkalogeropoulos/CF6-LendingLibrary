@@ -92,10 +92,25 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean isBookCurrentlyBorrowed(Long bookId) {
-        return borrowingRepository.existsByBookIdAndReturnDateIsNull(bookId);
+        return borrowingRepository.existsByBookIdAndActiveTrue(bookId);
     }
     @Override
     public Page<Book> getPaginatedBooks(Pageable pageable) {
         return bookRepository.findAll(pageable);
+    }
+
+    public List<BookDTO> searchBooksByAuthor(String author) {
+        return bookRepository.findByAuthorContainingIgnoreCase(author)
+                .stream().map(BookDTO::new).collect(Collectors.toList());
+    }
+
+    public List<BookDTO> searchBooksByTitle(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title)
+                .stream().map(BookDTO::new).collect(Collectors.toList());
+    }
+
+    public List<BookDTO> searchBooksByIsbn(String isbn) {
+        return bookRepository.findByIsbnContainingIgnoreCase(isbn)
+                .stream().map(BookDTO::new).collect(Collectors.toList());
     }
 }

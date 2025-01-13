@@ -5,6 +5,9 @@ import com.williamkalogeropoulos.entity.Book;
 import com.williamkalogeropoulos.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +28,14 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
+    }
+
+    @GetMapping("/all")
+    public Page<Book> getAllBooks(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> bookPage = bookService.getPaginatedBooks(pageable);
+        return bookPage;
     }
 
     @Operation(summary = "Get all available books", description = "Fetches a list of available books for borrowing")
@@ -67,6 +78,23 @@ public class BookController {
             return ResponseEntity.ok("All books have been reset to available.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public List<BookDTO> searchBooks(@RequestParam String query, @RequestParam String type) {
+        switch (type) {
+            case "author":
+                List<BookDTO> authors =  bookService.searchBooksByAuthor(query);
+                return authors;
+            case "title":
+                List<BookDTO> titles =  bookService.searchBooksByTitle(query);
+                return titles;
+            case "isbn":
+                List<BookDTO> isbns =  bookService.searchBooksByIsbn(query);
+                return isbns;
+            default:
+                return List.of();
         }
     }
 }

@@ -27,4 +27,10 @@ public interface BookService {
     boolean isBookCurrentlyBorrowed(Long bookId);
 
     Page<Book> getPaginatedBooks(Pageable pageable);
+
+    List<BookDTO> searchBooksByAuthor(String query);
+
+    List<BookDTO> searchBooksByTitle(String query);
+
+    List<BookDTO> searchBooksByIsbn(String query);
 }

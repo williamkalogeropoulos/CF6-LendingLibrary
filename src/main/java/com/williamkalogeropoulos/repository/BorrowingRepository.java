@@ -20,4 +20,6 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
 
     // ✅ Deletes all borrowings related to a book before deleting the book
     void deleteByBookId(Long bookId);
+
+    boolean existsByBookIdAndActiveTrue(Long bookId);
 }

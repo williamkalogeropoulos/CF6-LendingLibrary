@@ -4,6 +4,7 @@
     <title>Search Books</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 <body>
 <div class="top-background"></div>
@@ -68,7 +69,7 @@
     </table>
 
     <!-- Pagination Controls -->
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center pagination-bottom">
         <a class="btn btn-outline-primary"
            th:if="${currentPage > 0}"
            th:href="@{/books(page=${currentPage - 1})}">
@@ -89,6 +90,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let activeSearchType = "author"; // Default search type
+        let searchTimer; // Timer for debounce
+        let paginationElement = document.querySelector(".pagination-bottom");
 
         // Handle tab clicks
         document.querySelectorAll("#searchTabs .nav-link").forEach(tab => {
@@ -98,18 +101,63 @@
                 this.classList.add("active");
                 activeSearchType = this.getAttribute("data-search");
                 document.getElementById("searchInput").value = "";
-                filterBooks();
             });
         });
 
         // Filter function
-        document.getElementById("searchInput").addEventListener("input", filterBooks);
+        //document.getElementById("searchInput").addEventListener("input", filterBooks);
+        document.getElementById("searchInput").addEventListener("input", function () {
+            clearTimeout(searchTimer);
+            let query = this.value.trim();
+            if (query.length !== 0){
+                paginationElement.classList.add("hidden");
+                searchTimer = setTimeout(() => {
+                    fetchBooks(query);
+                }, 1500); // 1.5 sec deboun
+            }else{
+                paginationElement.classList.remove("hidden");
+                fetchAllBooks();
+            }
+        });
 
-        function filterBooks() {
-            let query = document.getElementById("searchInput").value.toLowerCase();
-            document.querySelectorAll("#booksTable tr").forEach(row => {
-                let text = row.querySelector(`td:nth-child(${activeSearchType === 'title' ? 2 : activeSearchType === 'author' ? 3 : 4})`).textContent.toLowerCase();
-                row.style.display = text.includes(query) ? "" : "none";
+        function fetchBooks(query) {
+            fetch(`/api/books/search?query=${query}&type=${activeSearchType}`)
+                .then(response => response.json())
+                .then(books => updateBookTable(books))
+                .catch(error => console.error("Error fetching books:", error));
+        }
+
+        function fetchAllBooks() {
+            fetch(`/api/books/all?page=0&size=10`)
+                .then(response => response.json())
+                .then(data => updateBookTable(data.content)) // Use the content array from paginated response
+                .catch(error => console.error("Error fetching all books:", error));
+        }
+
+        function updateBookTable(books) {
+            let booksTable = document.getElementById("booksTable");
+            booksTable.innerHTML = ""; // Clear current results
+
+            books.forEach(book => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                <td>${book.id}</td>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td><a href="#" class="isbn-link" data-isbn="${book.isbn}">${book.isbn}</a></td>
+                <td>
+                    <span class="${book.available ? 'text-success' : 'text-danger'}">
+                        ${book.available ? 'Available' : 'Unavailable'}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn borrow-button ${book.available ? 'btn-primary' : 'btn-secondary'}"
+                            data-book-id="${book.id}" ${!book.available ? 'disabled' : ''}>
+                        Borrow
+                    </button>
+                </td>
+            `;
+                booksTable.appendChild(row);
             });
         }
 
@@ -119,13 +167,24 @@
                 event.preventDefault();
                 const isbn = this.dataset.isbn;
                 document.querySelectorAll(".popup").forEach(popup => popup.remove()); // Close previous popups
-
-                fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`)
+                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://openlibrary.org/api/books?bibkeys=ISBN:' + isbn + '&format=json&jscmd=data')}`)
                     .then(response => response.json())
                     .then(data => {
-                        const bookData = data[`ISBN:${isbn}`];
+                        // Extract JSON by removing `var _OLBookInfo=`
+                        let jsonString = data.contents.replace(/^var\s+_OLBookInfo\s*=\s*/, '').trim();
+                        jsonString = jsonString.replace(/;$/, '');
+                        // // Parse extracted JSON
+                         const bookJson = JSON.parse(jsonString);
+
+                        const bookData = bookJson[`ISBN:${isbn}`];
+                        console.log(bookData);
+                        if (!bookData) {
+                            alert("Book details not found.");
+                            return;
+                        }
+
                         if (bookData) {
-                            fetchAdditionalBookDetails(bookData, isbn);
+                            showPopup(bookData);
                         } else {
                             alert("Book details not found.");
                         }
@@ -134,45 +193,33 @@
             });
         });
 
-        function fetchAdditionalBookDetails(bookData, isbn) {
-            fetch(`https://openlibrary.org/works/${bookData.key}.json`)
-                .then(response => response.json())
-                .then(workData => {
-                    showPopup(bookData, workData);
-                })
-                .catch(error => {
-                    console.error("Error fetching additional book data:", error);
-                    showPopup(bookData, null);
-                });
-        }
-
-        function showPopup(bookData, workData) {
+        function showPopup(bookData) {
             let popup = document.createElement("div");
             popup.classList.add("popup");
+            if (bookData.authors && bookData.authors.length > 0) {
+                        popup.innerHTML = `
+                            <div class="popup-content">
+                                <span class="close-popup">&times;</span>
+                                <h2>${bookData.title}</h2>
+                                <img src="${bookData.cover ? bookData.cover.medium : 'default-image.jpg'}" alt="Book Cover">
+                                <p><strong>Author:</strong> ${bookData.authors[0].name ? bookData.authors[0].name : "Unknown"}</p>
+                                <p><strong>Preview URL:</strong> <a href="${bookData.ebooks[0].preview_url}" target="_blank">${bookData.title}</a></p>
+                                <p><strong>Publishers:</strong> ${bookData.publishers[0].name}</p>
+                                <p><strong>Number of Pages:</strong> ${bookData.number_of_pages}</p>
+                            </div>
+                        `;
 
-            let authors = bookData.authors ? bookData.authors.map(a => a.name).join(", ") : "Unknown";
-            let firstPublishYear = workData && workData.first_publish_date ? workData.first_publish_date : "Unknown";
-            let starRating = workData && workData.ratings_average ? workData.ratings_average.toFixed(1) : "No rating available.";
-            let numEditions = workData && workData.edition_count ? workData.edition_count : "Unknown";
+                        document.body.appendChild(popup);
 
-            popup.innerHTML = `
-        <div class="popup-content">
-            <span class="close-popup">&times;</span>
-            <h2>${bookData.title}</h2>
-            <img src="${bookData.cover ? bookData.cover.medium : 'default-image.jpg'}" alt="Book Cover">
-            <p><strong>Author:</strong> ${authors}</p>
-            <p><strong>Star Rating:</strong> ${starRating}</p>
-            <p><strong>First Publish Year:</strong> ${firstPublishYear}</p>
-            <p><strong>Number of Editions:</strong> ${numEditions}</p>
-        </div>
-    `;
+                        popup.querySelector(".close-popup").addEventListener("click", function () {
+                            popup.remove();
+                        });
+            } else {
+                console.log("No author information available.");
+            }
 
-            document.body.appendChild(popup);
-
-            popup.querySelector(".close-popup").addEventListener("click", function () {
-                popup.remove();
-            });
         }
+
     })
     document.querySelectorAll(".borrow-button").forEach(button => {
         if (!button.disabled) {  // Prevents disabled buttons from being clickable

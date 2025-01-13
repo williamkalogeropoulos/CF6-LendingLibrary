@@ -14,6 +14,7 @@ public class BorrowingMapper {
         dto.setBorrowDate(borrowing.getBorrowDate());
         dto.setReturnDate(borrowing.getReturnDate());
         dto.setOverdueCharges(borrowing.getOverdueCharges());
+        dto.setActive(borrowing.getActive());
         return dto;
     }
 }

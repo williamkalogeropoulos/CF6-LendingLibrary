@@ -59,8 +59,7 @@ public class UserServiceImpl implements UserService {
         // ✅ Encrypt password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // ✅ Assign default role USER
-        user.setRole(Role.USER);
+        user.setRole(user.getRole());
 
         userRepository.save(user);
     }

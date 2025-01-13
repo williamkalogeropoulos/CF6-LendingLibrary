@@ -63,7 +63,7 @@ CREATE TABLE `borrowings` (
   PRIMARY KEY (`id`),
   KEY `FK6q1qai7on9rcryji44lyglqt1` (`book_id`),
   KEY `FKaexiaowfdka601ns4qv7pu0re` (`user_id`),
-  CONSTRAINT `FK6q1qai7on9rcryji44lyglqt1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`),
+  CONSTRAINT `FK6q1qai7on9rcryji44lyglqt1` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FKaexiaowfdka601ns4qv7pu0re` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

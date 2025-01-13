@@ -1,13 +1,19 @@
 package com.williamkalogeropoulos.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "borrowings")
 public class Borrowing {
+    // ✅ Getters and Setters
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,32 +35,18 @@ public class Borrowing {
     @Column(name = "overdue_charges", nullable = false)
     private BigDecimal overdueCharges;
 
+    @Column(name = "active", nullable = false)
+    private Boolean active;
+
     public Borrowing() {}
 
-    public Borrowing(User user, Book book, LocalDate borrowDate, LocalDate returnDate, Double overdueCharges) {
+    public Borrowing(User user, Book book, LocalDate borrowDate, LocalDate returnDate, Double overdueCharges, Boolean active) {
         this.user = user;
         this.book = book;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
         this.overdueCharges = BigDecimal.valueOf(overdueCharges);
+        this.active = active;
     }
 
-    // ✅ Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
-    public Book getBook() { return book; }
-    public void setBook(Book book) { this.book = book; }
-
-    public LocalDate getBorrowDate() { return borrowDate; }
-    public void setBorrowDate(LocalDate borrowDate) { this.borrowDate = borrowDate; }
-
-    public LocalDate getReturnDate() { return returnDate; }
-    public void setReturnDate(LocalDate returnDate) { this.returnDate = returnDate; }
-
-    public BigDecimal getOverdueCharges() { return overdueCharges; }
-    public void setOverdueCharges(BigDecimal overdueCharges) { this.overdueCharges = overdueCharges; }
 }

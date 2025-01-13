@@ -53,7 +53,7 @@ class MapperTests {
         User user = new User("testuser", "password123", "test@example.com", Role.USER);
         user.setId(1L);
         Book book = new Book(1L, "Book Title", "Author Name", "123456789", true);
-        Borrowing borrowing = new Borrowing(user, book, LocalDate.now(), null, 0.0);
+        Borrowing borrowing = new Borrowing(user, book, LocalDate.now(), null, 0.0,true);
         borrowing.setId(1L);
 
         BorrowingDTO borrowingDTO = BorrowingMapper.toDTO(borrowing);

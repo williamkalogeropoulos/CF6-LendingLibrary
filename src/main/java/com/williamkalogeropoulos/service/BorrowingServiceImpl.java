@@ -74,6 +74,7 @@ public class BorrowingServiceImpl implements BorrowingService {
         borrowing.setBorrowDate(LocalDate.now());
         borrowing.setReturnDate(null); // Not returned yet
         borrowing.setOverdueCharges(BigDecimal.valueOf(0.0));
+        borrowing.setActive(true);
 
         book.setAvailable(false); // Mark book as unavailable
 
@@ -97,6 +98,7 @@ public class BorrowingServiceImpl implements BorrowingService {
         }
 
         borrowing.setReturnDate(LocalDate.now());
+        borrowing.setActive(false);
 
         Book book = borrowing.getBook();
         book.setAvailable(true); // ✅ Mark book as available

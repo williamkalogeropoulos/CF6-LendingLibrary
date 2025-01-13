@@ -1,5 +1,7 @@
 package com.williamkalogeropoulos.dto;
 
+import com.williamkalogeropoulos.entity.Book;
+
 public class BookDTO {
     private Long id;
     private String title;
@@ -13,6 +15,13 @@ public class BookDTO {
         this.author = author;
         this.isbn = isbn;
         this.available = available;
+    }
+    public BookDTO(Book book) {
+        this.id = book.getId();
+        this.title = book.getTitle();
+        this.author = book.getAuthor();
+        this.isbn = book.getIsbn();
+        this.available = book.getAvailable();
     }
 
     // Getters and Setters

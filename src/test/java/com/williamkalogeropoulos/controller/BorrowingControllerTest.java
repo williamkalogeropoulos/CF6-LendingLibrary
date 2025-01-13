@@ -36,8 +36,8 @@ class BorrowingControllerTest {
 
     @BeforeEach
     void setUp() {
-        borrowing1 = new BorrowingDTO(1L, "testuser", 1L, "Book Title 1", "Author 1", "123456789", LocalDate.of(2024, 1, 1), null, BigDecimal.ZERO);
-        borrowing2 = new BorrowingDTO(2L, "testuser2", 2L, "Book Title 2", "Author 2", "987654321", LocalDate.of(2024, 1, 2), null, BigDecimal.ZERO);
+        borrowing1 = new BorrowingDTO(1L, "testuser", 1L, "Book Title 1", "Author 1", "123456789", LocalDate.of(2024, 1, 1), null, BigDecimal.ZERO,true);
+        borrowing2 = new BorrowingDTO(2L, "testuser2", 2L, "Book Title 2", "Author 2", "987654321", LocalDate.of(2024, 1, 2), null, BigDecimal.ZERO,true);
     }
 
     @Test

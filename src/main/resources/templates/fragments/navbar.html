@@ -4,6 +4,7 @@
     <title>Navigation</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css"> <!-- Custom CSS -->
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 <body>
 
@@ -64,18 +65,26 @@
 </nav>
 
 <script>
-    document.querySelector("form[th\\:action='/logout']").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent default form submission
-        fetch('/logout', { method: 'POST' })
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = "/login"; // ✅ Redirect to login page after logout
-                } else {
-                    alert("Logout failed!");
-                }
-            })
-            .catch(error => console.error("Logout error:", error));
+    window.addEventListener("load", function () {
+        const logoutForm = document.querySelector("form[th\\:action='/logout']");
+
+        if (logoutForm) {
+            logoutForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                fetch('/logout', { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = "/login"; // ✅ Redirect to login page after logout
+                        } else {
+                            alert("Logout failed!");
+                        }
+                    })
+                    .catch(error => console.error("Logout error:", error));
+            });
+        }
     });
+
 </script>
 
 </body>
