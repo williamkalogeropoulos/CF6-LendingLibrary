@@ -26,6 +26,9 @@
         </li>
     </ul>
 
+
+    <span id="userRole" class="hidden" th:each="authority : ${#authentication.authorities}" th:text="${authority.authority}"></span>
+
     <!-- Search Input -->
     <div class="mt-3">
         <input type="text" id="searchInput" class="form-control" placeholder="Search...">
@@ -92,6 +95,7 @@
         let activeSearchType = "author"; // Default search type
         let searchTimer; // Timer for debounce
         let paginationElement = document.querySelector(".pagination-bottom");
+        let userRole = document.getElementById("userRole").innerText;
 
         // Handle tab clicks
         document.querySelectorAll("#searchTabs .nav-link").forEach(tab => {
@@ -150,15 +154,21 @@
                         ${book.available ? 'Available' : 'Unavailable'}
                     </span>
                 </td>
-                <td>
-                    <button class="btn borrow-button ${book.available ? 'btn-primary' : 'btn-secondary'}"
-                            data-book-id="${book.id}" ${!book.available ? 'disabled' : ''}>
-                        Borrow
-                    </button>
-                </td>
-            `;
+                `;
+                if (userRole !== "ROLE_ADMIN"){
+                    let borrow = `
+                    <td>
+                        <button class="btn borrow-button ${book.available ? 'btn-primary' : 'btn-secondary'}"
+                                data-book-id="${book.id}" ${!book.available ? 'disabled' : ''}>
+                            Borrow
+                        </button>
+                    </td>`;
+                    row.innerHTML += borrow;
+                }
+
                 booksTable.appendChild(row);
             });
+            borrowButtonSelected();
         }
 
         // Fetch book details from OpenLibrary API
@@ -195,6 +205,7 @@
 
         function showPopup(bookData) {
             let popup = document.createElement("div");
+            let preview_url = bookData.ebooks ? bookData.ebooks[0].preview_url : "#";
             popup.classList.add("popup");
             if (bookData.authors && bookData.authors.length > 0) {
                         popup.innerHTML = `
@@ -203,7 +214,7 @@
                                 <h2>${bookData.title}</h2>
                                 <img src="${bookData.cover ? bookData.cover.medium : 'default-image.jpg'}" alt="Book Cover">
                                 <p><strong>Author:</strong> ${bookData.authors[0].name ? bookData.authors[0].name : "Unknown"}</p>
-                                <p><strong>Preview URL:</strong> <a href="${bookData.ebooks[0].preview_url}" target="_blank">${bookData.title}</a></p>
+                                ${typeof bookData.ebooks !== "undefined" && bookData.ebooks != null ? ` <p><strong>Preview URL:</strong> <a href="${preview_url}" target="_blank">${bookData.title}</a></p>` : ``}
                                 <p><strong>Publishers:</strong> ${bookData.publishers[0].name}</p>
                                 <p><strong>Number of Pages:</strong> ${bookData.number_of_pages}</p>
                             </div>
@@ -220,32 +231,36 @@
 
         }
 
-    })
-    document.querySelectorAll(".borrow-button").forEach(button => {
-        if (!button.disabled) {  // Prevents disabled buttons from being clickable
-            button.addEventListener("click", function () {
-                const bookId = this.getAttribute("data-book-id");
-                fetch(`/api/borrowings/${bookId}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Failed to borrow book");
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        alert("Book borrowed successfully!");
-                        location.reload();
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        alert("Error borrowing book");
+        function borrowButtonSelected(){
+            document.querySelectorAll(".borrow-button").forEach(button => {
+                if (!button.disabled) {  // Prevents disabled buttons from being clickable
+                    button.addEventListener("click", function () {
+                        const bookId = this.getAttribute("data-book-id");
+                        fetch(`/api/borrowings/${bookId}`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error("Failed to borrow book");
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                alert("Book borrowed successfully!");
+                                location.reload();
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                alert("Error borrowing book");
+                            });
                     });
+                }
             });
         }
-    });
+        borrowButtonSelected();
+    })
+
 </script>
 <section>
 </section>
