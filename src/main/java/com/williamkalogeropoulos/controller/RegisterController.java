@@ -1,5 +1,6 @@
 package com.williamkalogeropoulos.controller;
 
+import com.williamkalogeropoulos.entity.Role;
 import com.williamkalogeropoulos.entity.User;
 import com.williamkalogeropoulos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ public class RegisterController {
         if (userService.getUserByEmail(user.getEmail()) != null) {
             model.addAttribute("error", "Email already exists. Try logging in.");
             return "register";
+        }
+
+        // ✅ Assign default role if not provided
+        if (user.getRole() == null || user.getRole().trim().isEmpty()) {
+            user.setRole(Role.valueOf("USER"));
         }
 
         // ✅ 4. Register the user
