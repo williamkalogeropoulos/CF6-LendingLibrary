@@ -47,7 +47,7 @@ http://localhost:8080
 
 ### Project Analysis:
 - **Tech Stack**: Spring Boot (backend), Thymeleaf (frontend), MySQL (database).
-- **Security**: Implemented via `SecurityConfig.java`, likely using Spring Security.
+- **Security**: Implemented via `SecurityConfig.java`, using Spring Security.
 - **Database**: Uses repositories (`BookRepository.java`, `UserRepository.java`) for database interactions.
 - **Services**: Business logic handled in `BookService.java`, `UserService.java`, etc.
 - **Exception Handling**: Centralized via `GlobalExceptionHandler.java`.
