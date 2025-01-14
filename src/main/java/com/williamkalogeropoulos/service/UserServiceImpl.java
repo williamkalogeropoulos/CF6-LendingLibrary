@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -136,5 +137,31 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String generateResetToken(String email) {
+        User user = getUserByEmail(email);
+        if (user != null) {
+            String token = UUID.randomUUID().toString(); // Generate unique token
+            user.setResetToken(token);
+            userRepository.save(user);
+            return token;
+        }
+        return null;
+    }
+
+    @Override
+    public User getUserByResetToken(String token) {
+        return userRepository.findByResetToken(token).orElse(null);
+    }
+
+    @Override
+    public void clearResetToken(String token) {
+        User user = getUserByResetToken(token);
+        if (user != null) {
+            user.setResetToken(null); // Clear token after password reset
+            userRepository.save(user);
+        }
     }
 }

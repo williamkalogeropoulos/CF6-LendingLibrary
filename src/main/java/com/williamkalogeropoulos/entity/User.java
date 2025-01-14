@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +29,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false) // Ensures role is not null
     private Role role; // ENUM: USER or ADMIN
+
+    @Column(unique = true)
+    private String resetToken; // ✅ Added reset token field
 
     // ✅ Default Constructor (Required by JPA)
     public User() {}
@@ -50,6 +55,8 @@ public class User implements UserDetails {
     public String getEmail() { return email; } // ✅ Ensure email getter is present
     public Role getRole() { return role; }
 
+    public String getResetToken() { return resetToken; } // ✅ Getter for reset token
+
     @Override
     public String getPassword() { return password; }
 
@@ -71,6 +78,8 @@ public class User implements UserDetails {
     public void setUsername(String username) { this.username = username; }
 
     public void setEmail(String email) { this.email = email; } // ✅ Setter for email
+
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; } // ✅ Setter for reset token
 
     public void setPassword(String password) {
         if (password != null && !password.isEmpty()) {

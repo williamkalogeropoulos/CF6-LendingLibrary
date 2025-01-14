@@ -20,7 +20,7 @@ public class ForgotPasswordController {
 
     @GetMapping
     public String showForgotPasswordForm() {
-        return "forgot-password"; // Simple page to enter email
+        return "forgot-password"; // Page where user enters email
     }
 
     @PostMapping
@@ -31,22 +31,13 @@ public class ForgotPasswordController {
             return "forgot-password";
         }
 
-        model.addAttribute("email", email);
-        return "reset-password"; // Redirect user to set a new password
-    }
+        // Generate a reset token
+        String token = userService.generateResetToken(email);
+        String resetLink = "http://localhost:8080/reset-password?token=" + token;
 
-    @PostMapping("/reset")
-    public String resetPassword(@RequestParam("email") String email,
-                                @RequestParam("newPassword") String newPassword,
-                                Model model) {
-        boolean success = userService.updatePassword(email, newPassword);
+        // ✅ Show the reset link on the page instead of sending an email
+        model.addAttribute("resetLink", resetLink);
 
-        if (success) {
-            model.addAttribute("success", "Password reset successfully! You can now log in.");
-            return "login";
-        } else {
-            model.addAttribute("error", "Error resetting password.");
-            return "reset-password";
-        }
+        return "forgot-password"; // Stay on the page and show the link
     }
 }
