@@ -24,6 +24,7 @@ public class LendingLibraryApplication {
                 User admin = new User();
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode("admin123")); // ✅ Ensure password is hashed
+                admin.setEmail("admin@admin.com");
                 admin.setRole(Role.ADMIN);
                 userRepository.save(admin);
                 System.out.println("✅ Admin user created: admin / admin123");
