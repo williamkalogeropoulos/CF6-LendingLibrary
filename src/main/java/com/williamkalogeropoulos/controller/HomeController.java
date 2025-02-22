@@ -31,6 +31,8 @@ public class HomeController {
         return "index"; // ✅ No ".html" needed
     }
 
+    HelloWorld
+
     @GetMapping("/manage-users")
     public String manageUsers(Model model) {
         model.addAttribute("users", userService.getAllUsers());
